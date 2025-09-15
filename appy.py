@@ -121,32 +121,16 @@ st.markdown("""
 # ----------------------------
 # Logo en el Sidebar (Panel de Control)
 # ----------------------------
+import streamlit as st
+
 with st.sidebar:
+    margin = st.slider("Mover logo a la derecha", 0, 150, 30)
+
     st.markdown(
-        """
-        <style>
-        .logo-container {
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            margin-left: 10px;  /* margen mínimo cuando sidebar pequeño */
-            transition: margin-left 0.4s ease;
-        }
-        /* Cuando el sidebar tenga más ancho, aumentamos margen izquierdo */
-        @media (min-width: 400px) {
-            .logo-container {
-                margin-left: 40px;
-            }
-        }
-        @media (min-width: 600px) {
-            .logo-container {
-                margin-left: 80px;
-            }
-        }
-        </style>
-        <div class="logo-container">
+        f"""
+        <div style='display:flex; justify-content:flex-start; margin-left:{margin}px;'>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
     st.image("images/ALMlogo.png", width=150)
     st.markdown("</div>", unsafe_allow_html=True)
