@@ -233,33 +233,33 @@ if opcion_key == "dashboard":
     
     if not inventario.empty:
         
-      # ----------------------------
-# Alertas de Stock Bajo
-# ----------------------------
-bajo_stock = inventario[inventario["Cantidad"] < 5]
-if not bajo_stock.empty:
-    st.markdown("### 🔔 Alertas de Stock Bajo")
-    for _, row in bajo_stock.iterrows():
-        st.markdown(
-            f"""
-            <div style="
-                background-color: #ff4d4d;
-                color: white;
-                padding: 10px;
-                border-radius: 8px;
-                margin-bottom: 8px;
-                font-weight: bold;">
-                🚨 <strong>{row['Nombre']}</strong> (ID: {row['ID']}) 
-                tiene solo <strong>{int(row['Cantidad'])}</strong> unidades en stock.
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
-else:
-    st.markdown(
-        '<div style="background-color: #4CAF50; color: white; padding: 10px; border-radius: 8px; font-weight: bold;">✅ No hay alertas de stock bajo.</div>',
-        unsafe_allow_html=True
-    ) 
+                  # ----------------------------
+            # Alertas de Stock Bajo
+            # ----------------------------
+            bajo_stock = inventario[inventario["Cantidad"] < 5]
+            if not bajo_stock.empty:
+                st.markdown("### 🔔 Alertas de Stock Bajo")
+                for _, row in bajo_stock.iterrows():
+                    st.markdown(
+                        f"""
+                        <div style="
+                            background-color: #ff4d4d;
+                            color: white;
+                            padding: 10px;
+                            border-radius: 8px;
+                            margin-bottom: 8px;
+                            font-weight: bold;">
+                            🚨 <strong>{row['Nombre']}</strong> (ID: {row['ID']}) 
+                            tiene solo <strong>{int(row['Cantidad'])}</strong> unidades en stock.
+                        </div>
+                        """, 
+                        unsafe_allow_html=True
+                    )
+            else:
+                st.markdown(
+                    '<div style="background-color: #4CAF50; color: white; padding: 10px; border-radius: 8px; font-weight: bold;">✅ No hay alertas de stock bajo.</div>',
+                    unsafe_allow_html=True
+                ) 
                 
         # Filtros
         col1, col2, col3 = st.columns([2, 2, 1])
