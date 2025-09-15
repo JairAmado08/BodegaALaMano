@@ -214,6 +214,7 @@ with st.sidebar:
     st.markdown("### 🧭 Navegación")
     menu_options = {
         "📋 Dashboard": "dashboard",
+        "🔎 Buscar Producto": "buscar",
         "➕ Agregar Producto": "agregar",
         "✏️ Actualizar Producto": "actualizar", 
         "🗑️ Eliminar Producto": "eliminar",
@@ -397,6 +398,36 @@ elif opcion_key == "agregar":
         else:
             st.markdown('<div class="error-message">❌ Debes completar al menos ID y Nombre.</div>', 
                        unsafe_allow_html=True)
+
+# Buscar Producto
+elif opcion_key == "buscar":
+    st.markdown("## 🔎 Buscar Producto en Inventario")
+    
+    busqueda = st.text_input("Ingrese nombre, ID o categoría del producto:")
+
+    if busqueda:
+        resultados = inventario[
+            inventario["Nombre"].str.contains(busqueda, case=False, na=False) |
+            inventario["ID"].astype(str).str.contains(busqueda, case=False, na=False) |
+            inventario["Categoría"].str.contains(busqueda, case=False, na=False)
+        ]
+        
+        if not resultados.empty:
+            st.success(f"✅ Se encontraron {len(resultados)} productos que coinciden con '{busqueda}'.")
+            
+            st.dataframe(
+                resultados,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "Cantidad": st.column_config.NumberColumn("Cantidad", format="%d unidades"),
+                    "Precio": st.column_config.NumberColumn("Precio", format="S/%.2f")
+                }
+            )
+        else:
+            st.error(f"⚠️ No se encontraron productos que coincidan con '{busqueda}'.")
+    else:
+        st.info("✍️ Escriba el nombre, ID o categoría para buscar un producto.")
 
 # Actualizar Producto
 elif opcion_key == "actualizar":
