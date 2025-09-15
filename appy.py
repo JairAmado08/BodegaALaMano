@@ -138,13 +138,13 @@ with st.sidebar:
         <style>
         /* Estilo para el contenedor de la imagen en sidebar */
         .css-1v3fvcr img {
-            margin-left: 20px;  /* Mueve la imagen 20px a la derecha */
+            margin-left: 50px;  /* Mueve la imagen 20px a la derecha */
         }
         </style>
         """,
         unsafe_allow_html=True
     )
-    st.image("images/ALMlogo.jpg", width=150)
+    st.image("images/ALMlogo.png", width=150)
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
