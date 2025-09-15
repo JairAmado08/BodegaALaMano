@@ -128,23 +128,19 @@ with st.sidebar:
         .logo-container {
             width: 100%;
             display: flex;
-            justify-content: flex-start; /* empieza desde la izquierda */
-            padding-left: 5%;
+            justify-content: flex-start; /* Empieza desde la izquierda */
+            padding-left: 5%;  /* Margen izquierdo relativo */
             box-sizing: border-box;
-        }
-        .logo-container img {
-            max-width: 40%; /* la imagen ocupa hasta el 40% del ancho disponible */
-            height: auto;
-            transition: max-width 0.3s ease;
+            transition: padding-left 0.3s ease; /* Suave al cambiar tamaño */
         }
         </style>
         <div class="logo-container">
         """,
         unsafe_allow_html=True
     )
-    st.markdown('<img src="images/ALMlogo.png" alt="Logo" />', unsafe_allow_html=True)
+    st.image("images/ALMlogo.jpg", width=150)
     st.markdown("</div>", unsafe_allow_html=True)
-    
+
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
