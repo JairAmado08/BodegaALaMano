@@ -135,12 +135,16 @@ with col2:
 with st.sidebar:
     st.markdown(
         """
-        <div style="margin-left: 20px;">
-            <img src="images/ALMlogo.png" width="150" />
-        </div>
+        <style>
+        /* Estilo para el contenedor de la imagen en sidebar */
+        .css-1v3fvcr img {
+            margin-left: 20px;  /* Mueve la imagen 20px a la derecha */
+        }
+        </style>
         """,
         unsafe_allow_html=True
     )
+    st.image("images/ALMlogo.jpg", width=150)
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
