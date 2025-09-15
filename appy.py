@@ -232,6 +232,29 @@ if opcion_key == "dashboard":
     st.markdown("## 📋 Dashboard de Inventario")
     
     if not inventario.empty:
+
+                # ----------------------------
+        # Alertas de Stock Bajo
+        # ----------------------------
+        bajo_stock = inventario[inventario["Cantidad"] < 5]
+        if not bajo_stock.empty:
+            st.markdown("### 🔔 Alertas de Stock Bajo")
+            for _, row in bajo_stock.iterrows():
+                st.markdown(
+                    f"""
+                    <div class="warning-message">
+                        ⚠️ <strong>{row['Nombre']}</strong> (ID: {row['ID']}) 
+                        tiene solo <strong>{int(row['Cantidad'])}</strong> unidades en stock.
+                    </div>
+                    """, 
+                    unsafe_allow_html=True
+                )
+        else:
+            st.markdown(
+                '<div class="success-message">✅ No hay alertas de stock bajo.</div>',
+                unsafe_allow_html=True
+            )
+        
         # Filtros
         col1, col2, col3 = st.columns([2, 2, 1])
         with col1:
