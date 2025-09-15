@@ -262,6 +262,29 @@ if opcion_key == "dashboard":
                 '<div style="background-color: #4CAF50; color: white; padding: 10px; border-radius: 8px; font-weight: bold;">✅ No hay alertas de stock bajo.</div>',
                 unsafe_allow_html=True
             )
+
+        # ----------------------------
+        # Buscador de productos (Dashboard)
+        # ----------------------------
+        st.markdown("## 📦 Inventario de la Bodega")
+        
+        st.markdown("### 🔎 Buscar producto")
+        busqueda = st.text_input("Ingrese nombre, ID o categoría del producto:")
+        
+        if busqueda:
+            resultados = inventario[
+                inventario["Nombre"].str.contains(busqueda, case=False, na=False) |
+                inventario["ID"].astype(str).str.contains(busqueda, case=False, na=False) |
+                inventario["Categoría"].str.contains(busqueda, case=False, na=False)
+            ]
+            
+            if not resultados.empty:
+                st.success(f"✅ Se encontraron {len(resultados)} productos que coinciden con '{busqueda}'.")
+                st.dataframe(resultados, use_container_width=True)
+            else:
+                st.error(f"⚠️ No se encontraron productos que coincidan con '{busqueda}'.")
+        else:
+            st.dataframe(inventario, use_container_width=True)
         
         # Filtros
         col1, col2, col3 = st.columns([2, 2, 1])
