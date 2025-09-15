@@ -121,19 +121,13 @@ st.markdown("""
 # ----------------------------
 # Logo en el Sidebar (Panel de Control)
 # ----------------------------
-import streamlit as st
-
 with st.sidebar:
-    margin = st.slider("Mover logo a la derecha", 0, 150, 30)
-
-    st.markdown(
-        f"""
-        <div style='display:flex; justify-content:flex-start; margin-left:{margin}px;'>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.image("images/ALMlogo.png", width=150)
-    st.markdown("</div>", unsafe_allow_html=True)
+    # Creamos 2 columnas, la primera es más chica y sirve como espacio para mover el logo
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        st.write("")  # columna vacía que actúa como espacio lateral
+    with col2:
+        st.image("images/ALMlogo.jpg", width=150)
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
