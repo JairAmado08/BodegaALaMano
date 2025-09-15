@@ -362,15 +362,28 @@ elif opcion_key == "actualizar":
                 col_form1, col_form2 = st.columns(2)
                 with col_form1:
                     nombre = st.text_input("🏷️ Nombre", value=producto["Nombre"])
-                    categoria = st.selectbox("📂 Categoría", 
-                                           options=["Electrónicos", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"],
-                                           index=["Electrónicos", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"].index(producto["Categoría"]) if producto["Categoría"] in ["Electrónicos", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"] else 5)
+                    
+                    # Categorías unificadas con las de 'Agregar Producto'
+                    categorias_lista = [
+                        "Abarrotes secos", "Bebidas", "Lácteos y derivados", "Snacks y golosinas", 
+                        "Panadería y repostería", "Cárnicos y embutidos", "Frutas y verduras",
+                        "Productos de limpieza e higiene personal", "Enlatados y conservas", "Aceites y salsas"
+                    ]
+                    
+                    # Determinar índice de la categoría actual si existe en la lista
+                    if producto["Categoría"] in categorias_lista:
+                        categoria_idx = categorias_lista.index(producto["Categoría"])
+                    else:
+                        categoria_idx = 0  # fallback por si la categoría no existe
+                    
+                    categoria = st.selectbox("📂 Categoría", options=categorias_lista, index=categoria_idx)
                 
                 with col_form2:
                     cantidad = st.number_input("📦 Cantidad", min_value=0, value=int(producto["Cantidad"]), step=1)
                     precio = st.number_input("💰 Precio", min_value=0.0, value=float(producto["Precio"]), step=0.01, format="%.2f")
                 
                 submit = st.form_submit_button("🔄 Actualizar Producto", use_container_width=True)
+
         
         with col2:
             st.markdown("### 📊 Información Actual")
