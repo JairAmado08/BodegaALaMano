@@ -124,11 +124,21 @@ st.markdown("""
 with st.sidebar:
     st.markdown(
         """
-        <div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 20px;">
+        <style>
+        .logo-container {
+            display: flex;
+            justify-content: center;  /* centra horizontalmente */
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease; /* animación suave al cambiar tamaño */
+        }
+        </style>
+        <div class="logo-container">
         """,
         unsafe_allow_html=True
     )
-    st.image("images/ALMlogo.png", width=150)
+    st.image("images/ALMlogo.jpg", width=150)
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("## 🛠️ Panel de Control")
