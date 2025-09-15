@@ -44,7 +44,7 @@ Diseñar un **sistema digital de gestión de inventario** que permita:
   - Correción de errores por código de producto duplicado.
   - Se definieron de manera adecuada los datos.
 
-- **v2 (Septiembre 14 de 2025)**  
+- **v2.0 (Septiembre 14 de 2025)**  
   - Se añadió logo corporativo en el panel de Control.
   - Se integró módulo de Reportes (top productos, valor de inventario, etc.).
   - Se añadieron Alertas de Stock Bajo.
