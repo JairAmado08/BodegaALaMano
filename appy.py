@@ -122,12 +122,34 @@ st.markdown("""
 # Logo en el Sidebar (Panel de Control)
 # ----------------------------
 with st.sidebar:
-    # Proporciones más equilibradas para que el espacio izquierdo sea pequeño pero permita movimiento
-    col1, col2 = st.columns([0.3, 3])
-    with col1:
-        st.write("")  # espacio para empujar el logo, pequeño pero efectivo
-    with col2:
-        st.image("images/ALMlogo.png", width=150)
+    st.markdown(
+        """
+        <style>
+        .logo-container {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            margin-left: 10px;  /* margen mínimo cuando sidebar pequeño */
+            transition: margin-left 0.4s ease;
+        }
+        /* Cuando el sidebar tenga más ancho, aumentamos margen izquierdo */
+        @media (min-width: 400px) {
+            .logo-container {
+                margin-left: 40px;
+            }
+        }
+        @media (min-width: 600px) {
+            .logo-container {
+                margin-left: 80px;
+            }
+        }
+        </style>
+        <div class="logo-container">
+        """,
+        unsafe_allow_html=True
+    )
+    st.image("images/ALMlogo.png", width=150)
+    st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
