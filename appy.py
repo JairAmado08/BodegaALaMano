@@ -522,8 +522,8 @@ elif opcion_key == "reportes":
             use_container_width=True,
             hide_index=True,
             column_config={
-                "Precio": st.column_config.NumberColumn("Precio", format="$%.2f"),
-                "Valor_Total": st.column_config.NumberColumn("Valor Total", format="$%.2f")
+                "Precio": st.column_config.NumberColumn("Precio", format="S/%.2f"),
+                "Valor_Total": st.column_config.NumberColumn("Valor Total", format="S/%.2f")
             }
         )
         
