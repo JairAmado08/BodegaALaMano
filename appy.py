@@ -305,7 +305,7 @@ elif opcion_key == "agregar":
                 col_form1, col_form2 = st.columns(2)
                 with col_form1:
                     id_ = st.text_input("🆔 ID del producto", placeholder="Ej: P001")
-                    nombre = st.text_input("🏷️ Nombre del producto", placeholder="Ej: Laptop Dell")
+                    nombre = st.text_input("🏷️ Nombre del producto", placeholder="Ej: Inca Kola 1.5L")
                     categoria = st.selectbox("📂 Categoría", 
                                            options=["Abarrotes secos", "Bebidas", "Lácteos y derivados", "Snacks y golosinas", "Panadería y repostería", "Cárnicos y embutidos", "Frutas y verduras",
                                             "Productos de limpieza e higiene personal", "Enlatados y conservas", "Aceites y salsas"],
