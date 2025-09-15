@@ -240,7 +240,7 @@ if opcion_key == "dashboard":
         if not bajo_stock.empty:
             st.markdown("### 🔔 Alertas de Stock Bajo")
             for _, row in bajo_stock.iterrows():
-                col1, col2, col3 = st.columns([2, 2, 1])   # 👈 8 espacios, está dentro del for
+                col1, col2, col3 = st.columns([2, 2, 1])   # 
                 with col1:
                     st.markdown(
                         f"""
@@ -251,11 +251,11 @@ if opcion_key == "dashboard":
                             border-radius: 8px;
                             margin-bottom: 8px;
                             font-weight: bold;">
-                            🚨 <strong>{row['Nombre']}</strong> 
-                            (ID: {row['ID']}) — Stock: <strong>{int(row['Cantidad'])}</strong>
-                        </div>
-                        """,
-                        unsafe_allow_html=True
+                            🚨 <strong>{row['Nombre']}</strong> (ID: {row['ID']}) 
+                    tiene solo <strong>{int(row['Cantidad'])}</strong> unidades en stock.
+                </div>
+                """,
+                unsafe_allow_html=True
                     )
         else:
             st.markdown(
