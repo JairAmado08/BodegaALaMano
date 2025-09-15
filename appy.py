@@ -118,25 +118,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------
-# Mostrar logo y encabezado
-# ----------------------------
-col1, col2 = st.columns([0.15, 0.85])
-with col1:
-    st.image("images/ALMlogo.jpg", width=100)  # Logo arriba a la izquierda
-with col2:
-    st.markdown(
-        "<h1 style='margin-top:20px;'>📦 Bodega ALM - Sistema de Inventario</h1>",
-        unsafe_allow_html=True
-    )
-
-# ----------------------------
-# Logo en el Sidebar (Panel de Control)
-# ----------------------------
-with st.sidebar:
-    st.image("images/ALMlogo.jpg", width=150)
-    st.markdown("## 🛠️ Panel de Control")
-
-# ----------------------------
 # Datos iniciales (en memoria)
 # ----------------------------
 if "inventario" not in st.session_state:
