@@ -12,99 +12,23 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS personalizado para mejorar el diseño
+# CSS personalizado
 st.markdown("""
 <style>
-    .main-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        color: white;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .success-message {
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-        color: #155724;
-        padding: 0.75rem 1.25rem;
-        margin-bottom: 1rem;
-        border-radius: 0.25rem;
-        border-left: 4px solid #28a745;
-    }
-    
-    .warning-message {
-        background-color: #fff3cd;
-        border: 1px solid #ffeaa7;
-        color: #856404;
-        padding: 0.75rem 1.25rem;
-        margin-bottom: 1rem;
-        border-radius: 0.25rem;
-        border-left: 4px solid #ffc107;
-    }
-    
-    .error-message {
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-        padding: 0.75rem 1.25rem;
-        margin-bottom: 1rem;
-        border-radius: 0.25rem;
-        border-left: 4px solid #dc3545;
-    }
-    
-    .product-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        margin: 1rem 0;
-        border: 1px solid #e9ecef;
-    }
-    
-    .low-stock {
-        border-left: 4px solid #dc3545 !important;
-        background: #fff5f5 !important;
-    }
-    
-    .medium-stock {
-        border-left: 4px solid #ffc107 !important;
-        background: #fffbf0 !important;
-    }
-    
-    .good-stock {
-        border-left: 4px solid #28a745 !important;
-        background: #f8fff8 !important;
-    }
-    
-    .stats-container {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        padding: 1rem;
-        border-radius: 10px;
-        color: white;
-        text-align: center;
-        margin: 0.5rem 0;
-    }
-    
-    .category-bar {
-        background: #e9ecef;
-        border-radius: 10px;
-        margin: 0.5rem 0;
-        overflow: hidden;
-    }
-    
-    .category-fill {
-        height: 30px;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        display: flex;
-        align-items: center;
-        padding: 0 10px;
-        color: white;
-        font-weight: bold;
-        min-width: 150px;
-    }
+    .main-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem; border-radius: 10px; margin-bottom: 2rem;
+        color: white; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);}
+    .success-message { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724;
+        padding: 0.75rem 1.25rem; margin-bottom: 1rem; border-radius: 0.25rem; border-left: 4px solid #28a745;}
+    .warning-message { background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404;
+        padding: 0.75rem 1.25rem; margin-bottom: 1rem; border-radius: 0.25rem; border-left: 4px solid #ffc107;}
+    .error-message { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24;
+        padding: 0.75rem 1.25rem; margin-bottom: 1rem; border-radius: 0.25rem; border-left: 4px solid #dc3545;}
+    .product-card { background: white; padding: 1.5rem; border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 1rem 0; border: 1px solid #e9ecef;}
+    .low-stock { border-left: 4px solid #dc3545 !important; background: #fff5f5 !important;}
+    .medium-stock { border-left: 4px solid #ffc107 !important; background: #fffbf0 !important;}
+    .good-stock { border-left: 4px solid #28a745 !important; background: #f8fff8 !important;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -118,17 +42,25 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------
-# Datos iniciales (en memoria)
+# Categorías de productos
+# ----------------------------
+CATEGORIAS = [
+    "Abarrotes secos", "Bebidas", "Lácteos y derivados", "Snacks y golosinas",
+    "Panadería y repostería", "Cárnicos y embutidos", "Frutas y verduras",
+    "Productos de limpieza e higiene personal", "Enlatados y conservas", "Aceites y salsas"
+]
+
+# ----------------------------
+# Datos iniciales
 # ----------------------------
 if "inventario" not in st.session_state:
     st.session_state.inventario = pd.DataFrame(columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"])
-    # Datos de ejemplo
     ejemplos = [
-        ["P001", "Inka Cola 1L", "Bebidas", 15, 7.50, "2024-01-15"],
-        ["P002", "Mesa de Oficina", "Muebles", 8, 299.99, "2024-01-16"],
-        ["P003", "Café Premium", "Alimentos", 25, 12.99, "2024-01-17"],
-        ["P004", "Impresora HP", "Bebidas", 3, 199.99, "2024-01-18"],
-        ["P005", "Silla Ergonómica", "Muebles", 12, 159.99, "2024-01-19"]
+        ["P001", "Inca Kola 1.5L", "Bebidas", 15, 6.50, "2024-01-15"],
+        ["P002", "Arroz Costeño 1kg", "Abarrotes secos", 25, 5.00, "2024-01-16"],
+        ["P003", "Leche Gloria tarro", "Lácteos y derivados", 18, 4.80, "2024-01-17"],
+        ["P004", "Pan francés (unidad)", "Panadería y repostería", 50, 0.40, "2024-01-18"],
+        ["P005", "Atún Florida 170g", "Enlatados y conservas", 12, 6.00, "2024-01-19"]
     ]
     for ejemplo in ejemplos:
         nuevo = pd.DataFrame([ejemplo], columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"])
@@ -156,35 +88,26 @@ def actualizar_producto(id_, nombre, categoria, cantidad, precio):
 def obtener_estadisticas():
     if inventario.empty:
         return 0, 0, 0, 0
-    
     total_productos = len(inventario)
     total_cantidad = inventario["Cantidad"].sum()
     valor_total = (inventario["Cantidad"] * inventario["Precio"]).sum()
     productos_bajo_stock = len(inventario[inventario["Cantidad"] < 5])
-    
     return total_productos, total_cantidad, valor_total, productos_bajo_stock
 
 # ----------------------------
-# Sidebar con métricas
+# Sidebar
 # ----------------------------
 with st.sidebar:
     st.markdown("### 📊 Panel de Control")
-    
-    # Estadísticas
     total_productos, total_cantidad, valor_total, productos_bajo_stock = obtener_estadisticas()
-    
     col1, col2 = st.columns(2)
     with col1:
         st.metric("📦 Productos", total_productos)
-        st.metric("💰 Valor Total", f"${valor_total:,.2f}")
-    
+        st.metric("💰 Valor Total", f"S/ {valor_total:,.2f}")
     with col2:
         st.metric("📈 Stock Total", total_cantidad)
         st.metric("⚠️ Bajo Stock", productos_bajo_stock, delta_color="inverse")
-    
     st.markdown("---")
-    
-    # Menú de navegación
     st.markdown("### 🧭 Navegación")
     menu_options = {
         "📋 Dashboard": "dashboard",
@@ -193,381 +116,92 @@ with st.sidebar:
         "🗑️ Eliminar Producto": "eliminar",
         "📊 Reportes": "reportes"
     }
-    
     opcion = st.radio("", list(menu_options.keys()), key="menu_radio")
     opcion_key = menu_options[opcion]
 
 # ----------------------------
-# Contenido principal
+# Dashboard
 # ----------------------------
-
-# Dashboard / Ver Inventario
 if opcion_key == "dashboard":
-    st.markdown("## 📋 Dashboard de Inventario")
-    
-    if not inventario.empty:
-        # Filtros
-        col1, col2, col3 = st.columns([2, 2, 1])
-        with col1:
-            categorias = ['Todas'] + sorted(inventario['Categoría'].unique().tolist())
-            categoria_filtro = st.selectbox("🏷️ Filtrar por categoría:", categorias)
-        
-        with col2:
-            stock_filtro = st.selectbox("📊 Filtrar por stock:", 
-                                      ['Todos', 'Stock bajo (<5)', 'Stock medio (5-15)', 'Stock alto (>15)'])
-        
-        with col3:
-            st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("🔄 Actualizar", use_container_width=True):
-                st.rerun()
-        
-        # Aplicar filtros
-        df_filtrado = inventario.copy()
-        if categoria_filtro != 'Todas':
-            df_filtrado = df_filtrado[df_filtrado['Categoría'] == categoria_filtro]
-        
-        if stock_filtro == 'Stock bajo (<5)':
-            df_filtrado = df_filtrado[df_filtrado['Cantidad'] < 5]
-        elif stock_filtro == 'Stock medio (5-15)':
-            df_filtrado = df_filtrado[(df_filtrado['Cantidad'] >= 5) & (df_filtrado['Cantidad'] <= 15)]
-        elif stock_filtro == 'Stock alto (>15)':
-            df_filtrado = df_filtrado[df_filtrado['Cantidad'] > 15]
-        
-        # Mostrar productos como cards
-        st.markdown("### 🏪 Productos en Inventario")
-        
-        for idx, producto in df_filtrado.iterrows():
-            # Determinar el estado del stock
-            cantidad = producto['Cantidad']
-            if cantidad < 5:
-                card_class = "product-card low-stock"
-                stock_icon = "🔴"
-                stock_text = "Stock Bajo"
-            elif cantidad <= 15:
-                card_class = "product-card medium-stock" 
-                stock_icon = "🟡"
-                stock_text = "Stock Medio"
-            else:
-                card_class = "product-card good-stock"
-                stock_icon = "🟢"
-                stock_text = "Stock Bueno"
-            
-            precio_total = cantidad * producto['Precio']
-            
-            st.markdown(f"""
-            <div class="{card_class}">
-                <div style="display: flex; justify-content: between; align-items: center;">
-                    <div style="flex: 1;">
-                        <h4>🏷️ {producto['Nombre']} (ID: {producto['ID']})</h4>
-                        <p><strong>Categoría:</strong> {producto['Categoría']}</p>
-                        <p><strong>Cantidad:</strong> {cantidad} unidades {stock_icon} <em>{stock_text}</em></p>
-                        <p><strong>Precio unitario:</strong> ${producto['Precio']:.2f}</p>
-                        <p><strong>Valor total:</strong> ${precio_total:.2f}</p>
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        # Tabla detallada
-        st.markdown("### 📋 Vista Detallada")
-        st.dataframe(
-            df_filtrado,
-            use_container_width=True,
-            hide_index=True,
-            column_config={
-                "Cantidad": st.column_config.NumberColumn(
-                    "Cantidad",
-                    help="Cantidad en stock",
-                    format="%d unidades"
-                ),
-                "Precio": st.column_config.NumberColumn(
-                    "Precio",
-                    help="Precio por unidad",
-                    format="$%.2f"
-                )
-            }
-        )
-        
-    else:
-        st.info("📭 No hay productos en el inventario. ¡Comienza agregando algunos!")
+    st.subheader("📋 Inventario actual")
+    st.dataframe(
+        inventario,
+        column_config={
+            "Precio": st.column_config.NumberColumn("Precio", format="S/ %.2f"),
+            "Cantidad": st.column_config.NumberColumn("Cantidad", format="%d"),
+        },
+        use_container_width=True
+    )
 
-# Agregar Producto
+# ----------------------------
+# Agregar producto
+# ----------------------------
 elif opcion_key == "agregar":
-    st.markdown("## ➕ Agregar Nuevo Producto")
-    
-    with st.container():
-        col1, col2 = st.columns([2, 1])
-        
-        with col1:
-            with st.form("form_agregar", clear_on_submit=True):
-                st.markdown("### 📝 Información del Producto")
-                
-                col_form1, col_form2 = st.columns(2)
-                with col_form1:
-                    id_ = st.text_input("🆔 ID del producto", placeholder="Ej: P001")
-                    nombre = st.text_input("🏷️ Nombre del producto", placeholder="Ej: Inka Cola 1L")
-                    categoria = st.selectbox("📂 Categoría", 
-                                           options=["Bebidas", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"],
-                                           index=5)
-                
-                with col_form2:
-                    cantidad = st.number_input("📦 Cantidad", min_value=0, step=1, value=1)
-                    precio = st.number_input("💰 Precio unitario", min_value=0.0, step=0.01, format="%.2f")
-                
-                submit = st.form_submit_button("✅ Agregar Producto", use_container_width=True)
-        
-        with col2:
-            st.markdown("### 💡 Consejos")
-            st.info("""
-            **Tips para agregar productos:**
-            - Usa IDs únicos y descriptivos
-            - Categoriza correctamente para mejor organización
-            - Revisa el stock mínimo recomendado
-            - Verifica el precio antes de guardar
-            """)
-    
-    if submit:
-        if id_ and nombre:
-            if id_ in inventario["ID"].values:
-                st.markdown('<div class="warning-message">⚠️ Ya existe un producto con este ID.</div>', 
-                          unsafe_allow_html=True)
-            else:
-                agregar_producto(id_, nombre, categoria, cantidad, precio)
-                st.markdown('<div class="success-message">✅ Producto agregado correctamente.</div>', 
-                          unsafe_allow_html=True)
-                st.balloons()
-        else:
-            st.markdown('<div class="error-message">❌ Debes completar al menos ID y Nombre.</div>', 
-                       unsafe_allow_html=True)
+    st.subheader("➕ Agregar Producto")
+    with st.form("form_agregar"):
+        id_ = st.text_input("ID del Producto")
+        nombre = st.text_input("Nombre del Producto")
+        categoria = st.selectbox("Categoría", CATEGORIAS)
+        cantidad = st.number_input("Cantidad", min_value=0, value=0)
+        precio = st.number_input("Precio (S/)", min_value=0.0, format="%.2f")
+        submitted = st.form_submit_button("Agregar")
+        if submitted:
+            agregar_producto(id_, nombre, categoria, cantidad, precio)
+            st.success(f"Producto **{nombre}** agregado con éxito ✅")
 
-# Actualizar Producto
+# ----------------------------
+# Actualizar producto
+# ----------------------------
 elif opcion_key == "actualizar":
-    st.markdown("## ✏️ Actualizar Producto")
-    
+    st.subheader("✏️ Actualizar Producto")
     ids = inventario["ID"].tolist()
     if ids:
-        col1, col2 = st.columns([2, 1])
-        
-        with col1:
-            id_sel = st.selectbox("🔍 Selecciona un producto por ID", ids)
-            producto = inventario[inventario["ID"] == id_sel].iloc[0]
-            
-            # Mostrar información actual
-            st.markdown(f"### 📋 Producto Actual: **{producto['Nombre']}**")
-            
-            with st.form("form_actualizar"):
-                st.markdown("#### 📝 Nuevos Datos")
-                
-                col_form1, col_form2 = st.columns(2)
-                with col_form1:
-                    nombre = st.text_input("🏷️ Nombre", value=producto["Nombre"])
-                    categoria = st.selectbox("📂 Categoría", 
-                                           options=["Bebidas", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"],
-                                           index=["Bebidas", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"].index(producto["Categoría"]) if producto["Categoría"] in ["Bebidas", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"] else 5)
-                
-                with col_form2:
-                    cantidad = st.number_input("📦 Cantidad", min_value=0, value=int(producto["Cantidad"]), step=1)
-                    precio = st.number_input("💰 Precio", min_value=0.0, value=float(producto["Precio"]), step=0.01, format="%.2f")
-                
-                submit = st.form_submit_button("🔄 Actualizar Producto", use_container_width=True)
-        
-        with col2:
-            st.markdown("### 📊 Información Actual")
-            st.metric("📦 Cantidad Actual", int(producto["Cantidad"]))
-            st.metric("💰 Precio Actual", f"${float(producto['Precio']):.2f}")
-            st.metric("💎 Valor Total", f"${float(producto['Precio']) * int(producto['Cantidad']):.2f}")
-        
-        if submit:
-            actualizar_producto(id_sel, nombre, categoria, cantidad, precio)
-            st.markdown('<div class="success-message">✅ Producto actualizado correctamente.</div>', 
-                       unsafe_allow_html=True)
-            st.rerun()
+        id_sel = st.selectbox("Selecciona ID", ids)
+        prod = inventario[inventario["ID"] == id_sel].iloc[0]
+        with st.form("form_actualizar"):
+            nombre = st.text_input("Nombre del Producto", prod["Nombre"])
+            categoria = st.selectbox("Categoría", CATEGORIAS, index=CATEGORIAS.index(prod["Categoría"]))
+            cantidad = st.number_input("Cantidad", min_value=0, value=int(prod["Cantidad"]))
+            precio = st.number_input("Precio (S/)", min_value=0.0, format="%.2f", value=float(prod["Precio"]))
+            submitted = st.form_submit_button("Actualizar")
+            if submitted:
+                actualizar_producto(id_sel, nombre, categoria, cantidad, precio)
+                st.success(f"Producto **{nombre}** actualizado con éxito ✅")
     else:
-        st.info("📭 No hay productos en el inventario para actualizar.")
+        st.warning("No hay productos para actualizar.")
 
-# Eliminar Producto
+# ----------------------------
+# Eliminar producto
+# ----------------------------
 elif opcion_key == "eliminar":
-    st.markdown("## 🗑️ Eliminar Producto")
-    
+    st.subheader("🗑️ Eliminar Producto")
     ids = inventario["ID"].tolist()
     if ids:
-        col1, col2 = st.columns([2, 1])
-        
-        with col1:
-            id_sel = st.selectbox("🔍 Selecciona un producto por ID", ids)
-            producto = inventario[inventario["ID"] == id_sel].iloc[0]
-            
-            # Mostrar información del producto a eliminar
-            st.markdown(f"### ⚠️ Producto a Eliminar")
-            
-            st.markdown(f"""
-            <div class="product-card" style="border-left: 4px solid #dc3545; background: #fff5f5;">
-                <h4>🏷️ {producto['Nombre']} (ID: {producto['ID']})</h4>
-                <p><strong>Categoría:</strong> {producto['Categoría']}</p>
-                <p><strong>Cantidad:</strong> {int(producto['Cantidad'])} unidades</p>
-                <p><strong>Precio:</strong> ${float(producto['Precio']):.2f}</p>
-                <p><strong>Valor Total:</strong> ${float(producto['Precio']) * int(producto['Cantidad']):.2f}</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("---")
-            
-            # Confirmación con checkbox
-            confirmacion = st.checkbox(f"✅ Confirmo que deseo eliminar el producto **{producto['Nombre']}**")
-            
-            if confirmacion:
-                if st.button("🗑️ ELIMINAR PRODUCTO", type="primary", use_container_width=True):
-                    eliminar_producto(id_sel)
-                    st.markdown('<div class="success-message">✅ Producto eliminado correctamente.</div>', 
-                               unsafe_allow_html=True)
-                    st.rerun()
-        
-        with col2:
-            st.markdown("### ⚠️ Advertencia")
-            st.warning("""
-            **¡Atención!**
-            
-            Esta acción eliminará permanentemente el producto del inventario.
-            
-            **No se puede deshacer.**
-            
-            Asegúrate de que realmente quieres eliminar este producto.
-            """)
-            
+        id_sel = st.selectbox("Selecciona ID", ids)
+        if st.button("Eliminar"):
+            eliminar_producto(id_sel)
+            st.success(f"Producto con ID **{id_sel}** eliminado ✅")
     else:
-        st.info("📭 No hay productos en el inventario para eliminar.")
+        st.warning("No hay productos para eliminar.")
 
+# ----------------------------
 # Reportes
+# ----------------------------
 elif opcion_key == "reportes":
-    st.markdown("## 📊 Reportes y Análisis")
-    
+    st.subheader("📊 Reportes")
     if not inventario.empty:
-        # Resumen general
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            total_productos = len(inventario)
-            st.markdown(f"""
-            <div class="stats-container">
-                <h3>📦</h3>
-                <h2>{total_productos}</h2>
-                <p>Productos Únicos</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            total_unidades = int(inventario['Cantidad'].sum())
-            st.markdown(f"""
-            <div class="stats-container">
-                <h3>📈</h3>
-                <h2>{total_unidades}</h2>
-                <p>Unidades Totales</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col3:
-            valor_total = (inventario['Cantidad'] * inventario['Precio']).sum()
-            st.markdown(f"""
-            <div class="stats-container">
-                <h3>💰</h3>
-                <h2>${valor_total:,.0f}</h2>
-                <p>Valor Inventario</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col4:
-            total_categorias = inventario['Categoría'].nunique()
-            st.markdown(f"""
-            <div class="stats-container">
-                <h3>🏷️</h3>
-                <h2>{total_categorias}</h2>
-                <p>Categorías</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.markdown("---")
-        
-        # Distribución por categorías
-        st.markdown("### 📊 Distribución por Categorías")
-        categoria_counts = inventario['Categoría'].value_counts()
-        max_count = categoria_counts.max()
-        
-        for categoria, count in categoria_counts.items():
-            porcentaje = (count / len(inventario)) * 100
-            width_percent = (count / max_count) * 100
-            
-            st.markdown(f"""
-            <div class="category-bar">
-                <div class="category-fill" style="width: {width_percent}%;">
-                    {categoria}: {count} productos ({porcentaje:.1f}%)
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.markdown("---")
-        
-       # Top productos por valor
-        st.markdown("### 💎 Top Productos por Valor")
-        inventario_valor = inventario.copy()
-        inventario_valor["Cantidad"] = pd.to_numeric(inventario_valor["Cantidad"], errors="coerce")
-        inventario_valor["Precio"] = pd.to_numeric(inventario_valor["Precio"], errors="coerce")
-        inventario_valor["Valor_Total"] = inventario_valor["Cantidad"] * inventario_valor["Precio"]
-        
-        top_productos = inventario_valor.nlargest(5, "Valor_Total")
-        
-        st.dataframe(
-            top_productos[['Nombre', 'Categoría', 'Cantidad', 'Precio', 'Valor_Total']],
-            use_container_width=True,
-            hide_index=True,
-            column_config={
-                "Precio": st.column_config.NumberColumn("Precio", format="$%.2f"),
-                "Valor_Total": st.column_config.NumberColumn("Valor Total", format="$%.2f")
-            }
-        )
-        
-        # Productos con stock bajo
-        st.markdown("### ⚠️ Productos con Stock Bajo")
-        productos_bajo_stock = inventario[inventario['Cantidad'] < 5]
-        
-        if not productos_bajo_stock.empty:
-            st.dataframe(
-                productos_bajo_stock,
-                use_container_width=True,
-                hide_index=True,
-                column_config={
-                    "Cantidad": st.column_config.NumberColumn(
-                        "Cantidad",
-                        help="⚠️ Stock bajo - requiere reabastecimiento",
-                        format="%d unidades"
-                    ),
-                    "Precio": st.column_config.NumberColumn("Precio", format="$%.2f")
-                }
-            )
-        else:
-            st.success("🎉 ¡Todos los productos tienen stock adecuado!")
-        
-        # Análisis por categoría
-        st.markdown("### 📈 Análisis por Categoría")
-        analisis_categoria = inventario.groupby('Categoría').agg({
-            'Cantidad': 'sum',
-            'Precio': 'mean'
-        }).round(2)
-        analisis_categoria['Valor_Categoria'] = inventario.groupby('Categoría').apply(
-            lambda x: (x['Cantidad'] * x['Precio']).sum()
-        ).round(2)
-        
-        st.dataframe(
-            analisis_categoria,
-            use_container_width=True,
-            column_config={
-                "Cantidad": st.column_config.NumberColumn("Total Unidades", format="%d"),
-                "Precio": st.column_config.NumberColumn("Precio Promedio", format="$%.2f"),
-                "Valor_Categoria": st.column_config.NumberColumn("Valor Categoría", format="$%.2f")
-            }
-        )
-        
+        inventario["Valor_Total"] = inventario["Cantidad"] * inventario["Precio"]
+
+        st.write("### 🔝 Top 5 productos por valor")
+        top_productos = inventario.nlargest(5, "Valor_Total")
+        st.dataframe(top_productos, use_container_width=True)
+
+        st.write("### 📦 Stock por categoría")
+        stock_categoria = inventario.groupby("Categoría")["Cantidad"].sum().reset_index()
+        st.bar_chart(stock_categoria.set_index("Categoría"))
     else:
-        st.info("📭 No hay datos suficientes para generar reportes.")
+        st.info("No hay datos en el inventario para mostrar reportes.")
+
 
 # ----------------------------
 # Footer
