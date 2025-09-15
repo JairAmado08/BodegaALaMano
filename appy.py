@@ -136,31 +136,14 @@ with st.sidebar:
     st.markdown(
         """
         <style>
-        /* Quitar padding y margen del sidebar */
-        .css-1d391kg {  /* Esta clase es para sidebar, puede cambiar según versión */
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-        /* Contenedor centrado */
-        .centered-container {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-top: 10px;
-            margin-bottom: 10px;
+        .css-1v3fvcr img {
+            margin-left: 20px;
         }
         </style>
-        <div class="centered-container">
         """,
         unsafe_allow_html=True
     )
     st.image("images/ALMlogo.png", width=150)
-    st.markdown(
-        """
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
