@@ -122,10 +122,12 @@ st.markdown("""
 # Logo en el Sidebar (Panel de Control)
 # ----------------------------
 with st.sidebar:
-    # Contenedor HTML para centrar
+    # Contenedor HTML para centrar la imagen
     st.markdown('<div style="display: flex; justify-content: center; margin-bottom: 1rem;">', unsafe_allow_html=True)
-    # Carga la imagen local correctamente
+    
+    # Cargar imagen local correctamente con st.image
     st.image("images/ALMlogo.png", width=150)
+    
     st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown("## 🛠️ Panel de Control")
