@@ -508,19 +508,22 @@ elif opcion_key == "reportes":
         
         st.markdown("---")
         
-        # Top productos por valor
+       # Top productos por valor
         st.markdown("### 💎 Top Productos por Valor")
         inventario_valor = inventario.copy()
-        inventario_valor['Valor_Total'] = inventario_valor['Cantidad'] * inventario_valor['Precio']
-        top_productos = inventario_valor.nlargest(5, 'Valor_Total')
+        inventario_valor["Cantidad"] = pd.to_numeric(inventario_valor["Cantidad"], errors="coerce")
+        inventario_valor["Precio"] = pd.to_numeric(inventario_valor["Precio"], errors="coerce")
+        inventario_valor["Valor_Total"] = inventario_valor["Cantidad"] * inventario_valor["Precio"]
+        
+        top_productos = inventario_valor.nlargest(5, "Valor_Total")
         
         st.dataframe(
             top_productos[['Nombre', 'Categoría', 'Cantidad', 'Precio', 'Valor_Total']],
             use_container_width=True,
             hide_index=True,
             column_config={
-                "Precio": st.column_config.NumberColumn("Precio", format="S/%.2f"),
-                "Valor_Total": st.column_config.NumberColumn("Valor Total", format="S/%.2f")
+                "Precio": st.column_config.NumberColumn("Precio", format="$%.2f"),
+                "Valor_Total": st.column_config.NumberColumn("Valor Total", format="$%.2f")
             }
         )
         
