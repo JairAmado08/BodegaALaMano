@@ -10,12 +10,12 @@ Este proyecto es un prototipo de sistema de gestión de inventario para la bodeg
 Actualmente, la bodega ALM (A La Mano) enfrenta dificultades en su proceso de Control de Inventario, ya que gestiona las entradas y salidas de productos de forma manual en un cuaderno.  
 Esto genera los siguientes problemas:
 
-- ❌ Errores frecuentes y registros incompletos.  
-- ❌ Falta de visibilidad en tiempo real sobre el stock.  
-- ❌ Desabastecimiento de productos de alta rotación.  
-- ❌ Sobrestock en otros casos.  
-- ❌ Dificultad para identificar movimientos específicos.  
-- ❌ Pérdida de tiempo al buscar información.  
+- Errores frecuentes y registros incompletos.  
+- Falta de visibilidad en tiempo real sobre el stock.  
+- Desabastecimiento de productos de alta rotación.  
+- Sobrestock en otros casos.  
+- Dificultad para identificar movimientos específicos.  
+- Pérdida de tiempo al buscar información.  
 
 Consecuencia: la toma de decisiones sobre compras y ventas se ve limitada, afectando la eficiencia operativa y la satisfacción del cliente.
 
