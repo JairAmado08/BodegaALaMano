@@ -124,11 +124,11 @@ if "inventario" not in st.session_state:
     st.session_state.inventario = pd.DataFrame(columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"])
     # Datos de ejemplo
     ejemplos = [
-        ["P001", "Laptop Dell", "Electrónicos", 15, 899.99, "2024-01-15"],
-        ["P002", "Mesa de Oficina", "Muebles", 8, 299.99, "2024-01-16"],
-        ["P003", "Café Premium", "Alimentos", 25, 12.99, "2024-01-17"],
-        ["P004", "Impresora HP", "Electrónicos", 3, 199.99, "2024-01-18"],
-        ["P005", "Silla Ergonómica", "Muebles", 12, 159.99, "2024-01-19"]
+        ["P001", "Inca Kola 1.5L", "Bebidas", 15, 6.50, "2024-01-15"],
+        ["P002", "Arroz Costeño 1kg", "Abarrotes secos", 25, 5.00, "2024-01-16"],
+        ["P003", "Leche Gloria tarro", "Lácteos y derivados", 18, 4.80, "2024-01-17"],
+        ["P004", "Pan francés (unidad)", "Panadería y repostería", 50, 0.40, "2024-01-18"],
+        ["P005", "Atún Florida 170g", "Enlatados y conservas", 12, 6.00, "2024-01-19"]
     ]
     for ejemplo in ejemplos:
         nuevo = pd.DataFrame([ejemplo], columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"])
@@ -307,7 +307,8 @@ elif opcion_key == "agregar":
                     id_ = st.text_input("🆔 ID del producto", placeholder="Ej: P001")
                     nombre = st.text_input("🏷️ Nombre del producto", placeholder="Ej: Laptop Dell")
                     categoria = st.selectbox("📂 Categoría", 
-                                           options=["Electrónicos", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"],
+                                           options=["Abarrotes secos", "Bebidas", "Lácteos y derivados", "Snacks y golosinas", "Panadería y repostería", "Cárnicos y embutidos", "Frutas y verduras",
+                                            "Productos de limpieza e higiene personal", "Enlatados y conservas", "Aceites y salsas"],
                                            index=5)
                 
                 with col_form2:
