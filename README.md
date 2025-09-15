@@ -1,5 +1,5 @@
 # Sistema de Gestión de Bodega ALM (A La Mano)
-**Proyecto académico – Grupo 5**
+**Proyecto integrador – Grupo 5**
 
 Este proyecto es un prototipo de sistema de gestión de inventario para la bodega A La Mano (ALM), cuyo objetivo es digitalizar el control de productos, entradas y salidas, mejorando la eficiencia y la toma de decisiones.
 
@@ -45,7 +45,7 @@ Consecuencia: la toma de decisiones sobre compras y ventas se ve limitada, afect
 
 ---
 
-## Actualizaciones del Proyecto
+## Actualizaciones del Prototipo
 
 - **v1.0 (Septiembre 08 de 2025)**  
   - Se diseñaron y crearon las funciones para el CRUD del Inventario.
