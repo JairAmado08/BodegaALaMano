@@ -35,7 +35,7 @@ Diseñar un **sistema digital de gestión de inventario** que permita:
 
 - **v1.0 (Septiembre 08 de 2025)**  
   - Se diseñaron y crearon las funciones para el CRUD del Inventario.
-  - Se agregó el Dashboard.
+  - Se diseñó el Dashboard.
   - Diseño básico. 
 
 - **v1.5 (Septiembre 11 de 2025)**  
