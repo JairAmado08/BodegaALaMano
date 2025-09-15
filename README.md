@@ -23,12 +23,25 @@ Esto genera los siguientes problemas:
 
 ## Objetivo del sistema
 
-Diseñar un **sistema digital de gestión de inventario** que permita:
+**Ejes Principales de Mejora**
 
-- Registrar productos con sus datos principales (ID, nombre, categoría, cantidad y precio).  
-- Controlar entradas y salidas de inventario en tiempo real.  
-- Consultar movimientos específicos de productos.  
-- Reducir errores y mejorar la eficiencia en la toma de decisiones.  
+  - Atención al cliente: Brindar un servicio ágil, cordial y personalizado.
+  - Abastecimiento eficiente: Mantener un stock adecuado de los productos de mayor rotación.
+  - Crecimiento sostenible: Ampliar progresivamente la variedad de productos según las necesidades del vecindario.
+  - Digitalización básica: Implementar sistemas simples de gestión de inventario y ventas.
+  - Relación comunitaria: Mantener precios competitivos, fomentando la confianza con los clientes.
+
+**Objetivos Específicos**
+
+  - Optimización del Proceso de Adquisición de Productos: Garantizar la calidad y disponibilidad de productos en tiempo y forma, minimizando discrepancias en documentación y agilizando la toma de decisiones.
+  - Aumento de la Satisfacción del Cliente: Ofrecer una experiencia de compra excepcional, resolviendo reclamos de manera rápida y eficiente mediante atención personalizada y procesos claros de devolución.
+  - Mejora del Control de Inventario: Implementar un sistema digital que asegure registros precisos en tiempo real, reduciendo errores de ingreso manual y asegurando la disponibilidad de productos más demandados.
+
+**Objetivos SMART**
+
+  - Incrementar la eficiencia en la comercialización: Aumentar la tasa de conversión de clientes potenciales en un 15% en el próximo trimestre, mediante una plataforma que optimice la gestión de leads y campañas     personalizadas.
+  - Optimizar la gestión operativa: Automatizar al menos el 50% de las tareas manuales en la operación de inventario y procesos de control (entradas, salidas, reportes) para finales de 2025.
+  - Incrementar la satisfacción del cliente: Mejorar el índice de satisfacción del cliente (CSAT) en un 10% dentro de los próximos 12 meses, mediante encuestas, seguimiento en tiempo real y mecanismos de retroalimentación.
 
 ---
 
