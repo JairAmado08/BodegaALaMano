@@ -136,20 +136,19 @@ with st.sidebar:
     st.markdown(
         """
         <style>
-        .logo-container {
+        .centered-img {
             display: flex;
             justify-content: center;
-            width: 100%;
-            padding-top: 10px;
-            padding-bottom: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
         </style>
-        <div class="logo-container">
-            <img src="images/ALMlogo.jpg" width="150" />
-        </div>
         """,
         unsafe_allow_html=True
     )
+    st.markdown('<div class="centered-img">', unsafe_allow_html=True)
+    st.image("images/ALMlogo.png", width=150)
+    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
