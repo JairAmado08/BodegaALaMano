@@ -438,6 +438,17 @@ elif opcion_key == "eliminar":
     else:
         st.info("📭 No hay productos en el inventario para eliminar.")
 
+# Asegurar que las columnas sean numéricas
+inventario_valor = inventario.copy()
+inventario_valor["Cantidad"] = pd.to_numeric(inventario_valor["Cantidad"], errors="coerce").fillna(0).astype(int)
+inventario_valor["Precio"] = pd.to_numeric(inventario_valor["Precio"], errors="coerce").fillna(0).astype(float)
+
+# Calcular columna de valor total
+inventario_valor["Valor_Total"] = inventario_valor["Cantidad"] * inventario_valor["Precio"]
+
+# Top productos
+top_productos = inventario_valor.nlargest(5, "Valor_Total")
+
 # Reportes
 elif opcion_key == "reportes":
     st.markdown("## 📊 Reportes y Análisis")
