@@ -133,9 +133,23 @@ with col2:
 # Logo en el Sidebar (Panel de Control)
 # ----------------------------
 with st.sidebar:
-    st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-    st.image("images/ALMlogo.png", width=150)
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <style>
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        </style>
+        <div class="logo-container">
+            <img src="images/ALMlogo.jpg" width="150" />
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
