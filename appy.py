@@ -124,10 +124,10 @@ if "inventario" not in st.session_state:
     st.session_state.inventario = pd.DataFrame(columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"])
     # Datos de ejemplo
     ejemplos = [
-        ["P001", "Laptop Dell", "Electrónicos", 15, 899.99, "2024-01-15"],
+        ["P001", "Inka Cola 1L", "Bebidas", 15, 7.50, "2024-01-15"],
         ["P002", "Mesa de Oficina", "Muebles", 8, 299.99, "2024-01-16"],
         ["P003", "Café Premium", "Alimentos", 25, 12.99, "2024-01-17"],
-        ["P004", "Impresora HP", "Electrónicos", 3, 199.99, "2024-01-18"],
+        ["P004", "Impresora HP", "Bebidas", 3, 199.99, "2024-01-18"],
         ["P005", "Silla Ergonómica", "Muebles", 12, 159.99, "2024-01-19"]
     ]
     for ejemplo in ejemplos:
@@ -305,9 +305,9 @@ elif opcion_key == "agregar":
                 col_form1, col_form2 = st.columns(2)
                 with col_form1:
                     id_ = st.text_input("🆔 ID del producto", placeholder="Ej: P001")
-                    nombre = st.text_input("🏷️ Nombre del producto", placeholder="Ej: Laptop Dell")
+                    nombre = st.text_input("🏷️ Nombre del producto", placeholder="Ej: Inka Cola 1L")
                     categoria = st.selectbox("📂 Categoría", 
-                                           options=["Electrónicos", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"],
+                                           options=["Bebidas", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"],
                                            index=5)
                 
                 with col_form2:
@@ -362,8 +362,8 @@ elif opcion_key == "actualizar":
                 with col_form1:
                     nombre = st.text_input("🏷️ Nombre", value=producto["Nombre"])
                     categoria = st.selectbox("📂 Categoría", 
-                                           options=["Electrónicos", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"],
-                                           index=["Electrónicos", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"].index(producto["Categoría"]) if producto["Categoría"] in ["Electrónicos", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"] else 5)
+                                           options=["Bebidas", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"],
+                                           index=["Bebidas", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"].index(producto["Categoría"]) if producto["Categoría"] in ["Bebidas", "Muebles", "Alimentos", "Ropa", "Herramientas", "Otros"] else 5)
                 
                 with col_form2:
                     cantidad = st.number_input("📦 Cantidad", min_value=0, value=int(producto["Cantidad"]), step=1)
