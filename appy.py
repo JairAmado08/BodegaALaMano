@@ -165,7 +165,7 @@ inventario = st.session_state.inventario
 # ----------------------------
 # Funciones CRUD
 # ----------------------------
-def agregar_producto(id_, nombre, categoria, cantidad, precio):
+def Registrar_producto(id_, nombre, categoria, cantidad, precio):
     fecha_actual = datetime.now().strftime("%Y-%m-%d")
     nuevo = pd.DataFrame([[id_, nombre, categoria, cantidad, precio, fecha_actual]], 
                          columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"])
@@ -215,7 +215,7 @@ with st.sidebar:
     menu_options = {
         "📋 Dashboard": "dashboard",
         "🔎 Buscar Producto": "buscar",
-        "➕ Agregar Producto": "agregar",
+        "➕ Registrar Producto": "Registrar",
         "✏️ Actualizar Producto": "actualizar", 
         "🗑️ Eliminar Producto": "eliminar",
         "📊 Reportes": "reportes"
@@ -349,15 +349,15 @@ if opcion_key == "dashboard":
     else:
         st.info("📭 No hay productos en el inventario. ¡Comienza agregando algunos!")
 
-# Agregar Producto
-elif opcion_key == "agregar":
-    st.markdown("## ➕ Agregar Nuevo Producto")
+# Registrar Producto
+elif opcion_key == "Registrar":
+    st.markdown("## ➕ Registrar Nuevo Producto")
     
     with st.container():
         col1, col2 = st.columns([2, 1])
         
         with col1:
-            with st.form("form_agregar", clear_on_submit=True):
+            with st.form("form_Registrar", clear_on_submit=True):
                 st.markdown("### 📝 Información del Producto")
                 
                 col_form1, col_form2 = st.columns(2)
@@ -373,12 +373,12 @@ elif opcion_key == "agregar":
                     cantidad = st.number_input("📦 Cantidad", min_value=0, step=1, value=1)
                     precio = st.number_input("💰 Precio unitario", min_value=0.0, step=0.01, format="%.2f")
                 
-                submit = st.form_submit_button("✅ Agregar Producto", use_container_width=True)
+                submit = st.form_submit_button("✅ Registrar Producto", use_container_width=True)
         
         with col2:
             st.markdown("### 💡 Consejos")
             st.info("""
-            **Tips para agregar productos:**
+            **Tips para Registrar productos:**
             - Usa IDs únicos y descriptivos
             - Categoriza correctamente para mejor organización
             - Revisa el stock mínimo recomendado
@@ -391,7 +391,7 @@ elif opcion_key == "agregar":
                 st.markdown('<div class="warning-message">⚠️ Ya existe un producto con este ID.</div>', 
                           unsafe_allow_html=True)
             else:
-                agregar_producto(id_, nombre, categoria, cantidad, precio)
+                Registrar_producto(id_, nombre, categoria, cantidad, precio)
                 st.markdown('<div class="success-message">✅ Producto agregado correctamente.</div>', 
                           unsafe_allow_html=True)
                 st.balloons()
@@ -451,7 +451,7 @@ elif opcion_key == "actualizar":
                 with col_form1:
                     nombre = st.text_input("🏷️ Nombre", value=producto["Nombre"])
                     
-                    # Categorías unificadas con las de 'Agregar Producto'
+                    # Categorías unificadas con las de 'Registrar Producto'
                     categorias_lista = [
                         "Abarrotes secos", "Bebidas", "Lácteos y derivados", "Snacks y golosinas", 
                         "Panadería y repostería", "Cárnicos y embutidos", "Frutas y verduras",
