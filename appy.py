@@ -112,7 +112,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>📦 Sistema de Gestión de Inventario</h1>
-    <h3>Bodega ALM - Control Inteligente</h3>
+    <h3>Bodega A La Mano, siempre al alcance de tu mano.</h3>
     <p>Prototipo CRUD desarrollado con Streamlit | Versión 2.0</p>
 </div>
 """, unsafe_allow_html=True)
@@ -577,7 +577,7 @@ elif opcion_key == "reportes":
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #666; padding: 1rem;">
-    <p>📦 <strong>Sistema de Inventario Bodega ALM</strong> | Desarrollado con ❤️ usando Streamlit</p>
+    <p>📦 <strong>Sistema de Inventario Bodega ALM</strong> | Desarrollado por el Grupo 5</p>
     <p><small>Versión 2.0 - Sin Dependencias Externas</small></p>
 </div>
 """, unsafe_allow_html=True)
