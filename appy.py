@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
 from datetime import datetime
 
 # ----------------------------
@@ -91,6 +89,32 @@ st.markdown("""
     .good-stock {
         border-left: 4px solid #28a745 !important;
         background: #f8fff8 !important;
+    }
+    
+    .stats-container {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        padding: 1rem;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+        margin: 0.5rem 0;
+    }
+    
+    .category-bar {
+        background: #e9ecef;
+        border-radius: 10px;
+        margin: 0.5rem 0;
+        overflow: hidden;
+    }
+    
+    .category-fill {
+        height: 30px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        color: white;
+        font-weight: bold;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -430,30 +454,82 @@ elif opcion_key == "reportes":
     st.markdown("## 📊 Reportes y Análisis")
     
     if not inventario.empty:
-        col1, col2 = st.columns(2)
+        # Resumen general
+        col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            # Gráfico de productos por categoría
-            categoria_counts = inventario['Categoría'].value_counts()
-            fig_pie = px.pie(
-                values=categoria_counts.values,
-                names=categoria_counts.index,
-                title="📊 Distribución por Categorías"
-            )
-            fig_pie.update_traces(textposition='inside', textinfo='percent+label')
-            st.plotly_chart(fig_pie, use_container_width=True)
+            st.markdown("""
+            <div class="stats-container">
+                <h3>📦</h3>
+                <h2>{}</h2>
+                <p>Productos Únicos</p>
+            </div>
+            """.format(len(inventario)), unsafe_allow_html=True)
         
         with col2:
-            # Gráfico de stock por producto
-            fig_bar = px.bar(
-                inventario.head(10),
-                x='Nombre',
-                y='Cantidad',
-                color='Categoría',
-                title="📦 Stock por Producto (Top 10)"
-            )
-            fig_bar.update_layout(xaxis_tickangle=-45)
-            st.plotly_chart(fig_bar, use_container_width=True)
+            st.markdown("""
+            <div class="stats-container">
+                <h3>📈</h3>
+                <h2>{}</h2>
+                <p>Unidades Totales</p>
+            </div>
+            """.format(int(inventario['Cantidad'].sum())), unsafe_allow_html=True)
+        
+        with col3:
+            valor_total = (inventario['Cantidad'] * inventario['Precio']).sum()
+            st.markdown("""
+            <div class="stats-container">
+                <h3>💰</h3>
+                <h2>${:,.0f}</h2>
+                <p>Valor Inventario</p>
+            </div>
+            """.format(valor_total), unsafe_allow_html=True)
+        
+        with col4:
+            st.markdown("""
+            <div class="stats-container">
+                <h3>🏷️</h3>
+                <h2>{}</h2>
+                <p>Categorías</p>
+            </div>
+            """.format(inventario['Categoría'].nunique()), unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Distribución por categorías (gráfico simple)
+        st.markdown("### 📊 Distribución por Categorías")
+        categoria_counts = inventario['Categoría'].value_counts()
+        max_count = categoria_counts.max()
+        
+        for categoria, count in categoria_counts.items():
+            porcentaje = (count / len(inventario)) * 100
+            width_percent = (count / max_count) * 100
+            
+            st.markdown(f"""
+            <div class="category-bar">
+                <div class="category-fill" style="width: {width_percent}%;">
+                    {categoria}: {count} productos ({porcentaje:.1f}%)
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Top productos por valor
+        st.markdown("### 💎 Top Productos por Valor")
+        inventario_valor = inventario.copy()
+        inventario_valor['Valor_Total'] = inventario_valor['Cantidad'] * inventario_valor['Precio']
+        top_productos = inventario_valor.nlargest(5, 'Valor_Total')
+        
+        st.dataframe(
+            top_productos[['Nombre', 'Categoría', 'Cantidad', 'Precio', 'Valor_Total']],
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Precio": st.column_config.NumberColumn("Precio", format="$%.2f"),
+                "Valor_Total": st.column_config.NumberColumn("Valor Total", format="$%.2f")
+            }
+        )
         
         # Productos con stock bajo
         st.markdown("### ⚠️ Productos con Stock Bajo")
@@ -469,25 +545,32 @@ elif opcion_key == "reportes":
                         "Cantidad",
                         help="⚠️ Stock bajo - requiere reabastecimiento",
                         format="%d unidades"
-                    )
+                    ),
+                    "Precio": st.column_config.NumberColumn("Precio", format="$%.2f")
                 }
             )
         else:
             st.success("🎉 ¡Todos los productos tienen stock adecuado!")
         
-        # Resumen financiero
-        st.markdown("### 💰 Resumen Financiero")
-        valor_por_categoria = inventario.groupby('Categoría').apply(
+        # Análisis por categoría
+        st.markdown("### 📈 Análisis por Categoría")
+        analisis_categoria = inventario.groupby('Categoría').agg({
+            'Cantidad': 'sum',
+            'Precio': 'mean'
+        }).round(2)
+        analisis_categoria['Valor_Categoria'] = inventario.groupby('Categoría').apply(
             lambda x: (x['Cantidad'] * x['Precio']).sum()
-        ).sort_values(ascending=False)
+        ).round(2)
         
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("💎 Valor Total Inventario", f"${valor_por_categoria.sum():,.2f}")
-        with col2:
-            st.metric("📦 Productos Únicos", len(inventario))
-        with col3:
-            st.metric("🏪 Categorías", inventario['Categoría'].nunique())
+        st.dataframe(
+            analisis_categoria,
+            use_container_width=True,
+            column_config={
+                "Cantidad": st.column_config.NumberColumn("Total Unidades", format="%d"),
+                "Precio": st.column_config.NumberColumn("Precio Promedio", format="$%.2f"),
+                "Valor_Categoria": st.column_config.NumberColumn("Valor Categoría", format="$%.2f")
+            }
+        )
         
     else:
         st.info("📭 No hay datos suficientes para generar reportes.")
@@ -499,6 +582,8 @@ st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #666; padding: 1rem;">
     <p>📦 <strong>Sistema de Inventario Bodega ALM</strong> | Desarrollado con ❤️ usando Streamlit</p>
-    <p><small>Versión 2.0 - Interfaz Mejorada</small></p>
+    <p><small>Versión 2.0 - Sin Dependencias Externas</small></p>
+</div>
+""", unsafe_allow_html=True)
 </div>
 """, unsafe_allow_html=True)
