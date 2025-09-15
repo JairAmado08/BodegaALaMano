@@ -135,20 +135,12 @@ with col2:
 with st.sidebar:
     st.markdown(
         """
-        <style>
-        .centered-img {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        </style>
+        <div style="margin-left: 20px;">
+            <img src="images/ALMlogo.png" width="150" />
+        </div>
         """,
         unsafe_allow_html=True
     )
-    st.markdown('<div class="centered-img">', unsafe_allow_html=True)
-    st.image("images/ALMlogo.png", width=150)
-    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
