@@ -232,23 +232,32 @@ if opcion_key == "dashboard":
     st.markdown("## 📋 Dashboard de Inventario")
     
     if not inventario.empty:
-
-        # ----------------------------
+        
+               # ----------------------------
         # Alerta global de stock bajo
         # ----------------------------
-        if productos_bajo_stock > 0:
-            st.markdown(f"""
-            <div class="error-message" style="margin-top: 1rem;">
-                🚨 Atención: Hay <strong>{productos_bajo_stock}</strong> productos con stock bajo.  
-                Revisa el inventario para evitar quiebres de stock.
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown(
-                '<div class="success-message">✅ No hay alertas de stock bajo.</div>',
-                unsafe_allow_html=True
-            )
+        productos_bajo_stock_df = inventario[inventario['Cantidad'] < 5]
         
+            if not productos_bajo_stock_df.empty:
+                # Mensaje de alerta en rojo
+                st.markdown(f"""
+                <div class="error-message" style="margin-top: 1rem;">
+                    🚨 Atención: Hay <strong>{len(productos_bajo_stock_df)}</strong> productos con stock bajo.  
+                    Revisa el inventario para evitar quiebres de stock.
+                </div>
+                """, unsafe_allow_html=True)
+            
+                # Lista de productos en bajo stock
+                st.markdown("### 📉 Productos con Stock Bajo")
+                for idx, row in productos_bajo_stock_df.iterrows():
+                    st.markdown(f"""
+                    <div class="product-card low-stock">
+                        <h4>🏷️ {row['Nombre']} (ID: {row['ID']})</h4>
+                        <p><strong>Cantidad:</strong> {int(row['Cantidad'])} unidades 🚨</p>
+                        <p><strong>Categoría:</strong> {row['Categoría']}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
         # Filtros
         col1, col2, col3 = st.columns([2, 2, 1])
         with col1:
