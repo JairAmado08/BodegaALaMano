@@ -127,7 +127,7 @@ with st.sidebar:
     with col1:
         st.write("")  # columna vacía que actúa como espacio lateral
     with col2:
-        st.image("images/ALMlogo.jpg", width=150)
+        st.image("images/ALMlogo.png", width=150)
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
