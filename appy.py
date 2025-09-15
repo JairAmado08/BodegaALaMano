@@ -134,7 +134,7 @@ with col2:
 # ----------------------------
 with st.sidebar:
     st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-    st.image("images/ALMlogo.jpg", width=150)
+    st.image("images/ALMlogo.png", width=150)
     st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
