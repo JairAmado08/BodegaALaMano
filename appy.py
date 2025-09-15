@@ -25,14 +25,6 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
-    .metric-card {
-        background: white;
-        padding: 1rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        border-left: 4px solid #667eea;
-    }
-    
     .success-message {
         background-color: #d4edda;
         border: 1px solid #c3e6cb;
@@ -61,10 +53,6 @@ st.markdown("""
         margin-bottom: 1rem;
         border-radius: 0.25rem;
         border-left: 4px solid #dc3545;
-    }
-    
-    .sidebar .sidebar-content {
-        background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
     }
     
     .product-card {
@@ -115,6 +103,7 @@ st.markdown("""
         padding: 0 10px;
         color: white;
         font-weight: bold;
+        min-width: 150px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -170,7 +159,7 @@ def obtener_estadisticas():
     
     total_productos = len(inventario)
     total_cantidad = inventario["Cantidad"].sum()
-    valor_total = (inventario["Cantidad"] * inventario["Precio"]).sum() if "Precio" in inventario.columns else 0
+    valor_total = (inventario["Cantidad"] * inventario["Precio"]).sum()
     productos_bajo_stock = len(inventario[inventario["Cantidad"] < 5])
     
     return total_productos, total_cantidad, valor_total, productos_bajo_stock
@@ -263,7 +252,7 @@ if opcion_key == "dashboard":
                 stock_icon = "🟢"
                 stock_text = "Stock Bueno"
             
-            precio_total = cantidad * producto['Precio'] if 'Precio' in producto else 0
+            precio_total = cantidad * producto['Precio']
             
             st.markdown(f"""
             <div class="{card_class}">
@@ -378,16 +367,15 @@ elif opcion_key == "actualizar":
                 
                 with col_form2:
                     cantidad = st.number_input("📦 Cantidad", min_value=0, value=int(producto["Cantidad"]), step=1)
-                    precio = st.number_input("💰 Precio", min_value=0.0, value=float(producto["Precio"]) if "Precio" in producto else 0.0, step=0.01, format="%.2f")
+                    precio = st.number_input("💰 Precio", min_value=0.0, value=float(producto["Precio"]), step=0.01, format="%.2f")
                 
                 submit = st.form_submit_button("🔄 Actualizar Producto", use_container_width=True)
         
         with col2:
             st.markdown("### 📊 Información Actual")
             st.metric("📦 Cantidad Actual", int(producto["Cantidad"]))
-            if "Precio" in producto:
-                st.metric("💰 Precio Actual", f"${float(producto['Precio']):.2f}")
-                st.metric("💎 Valor Total", f"${float(producto['Precio']) * int(producto['Cantidad']):.2f}")
+            st.metric("💰 Precio Actual", f"${float(producto['Precio']):.2f}")
+            st.metric("💎 Valor Total", f"${float(producto['Precio']) * int(producto['Cantidad']):.2f}")
         
         if submit:
             actualizar_producto(id_sel, nombre, categoria, cantidad, precio)
@@ -458,45 +446,48 @@ elif opcion_key == "reportes":
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            st.markdown("""
+            total_productos = len(inventario)
+            st.markdown(f"""
             <div class="stats-container">
                 <h3>📦</h3>
-                <h2>{}</h2>
+                <h2>{total_productos}</h2>
                 <p>Productos Únicos</p>
             </div>
-            """.format(len(inventario)), unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
         
         with col2:
-            st.markdown("""
+            total_unidades = int(inventario['Cantidad'].sum())
+            st.markdown(f"""
             <div class="stats-container">
                 <h3>📈</h3>
-                <h2>{}</h2>
+                <h2>{total_unidades}</h2>
                 <p>Unidades Totales</p>
             </div>
-            """.format(int(inventario['Cantidad'].sum())), unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
         
         with col3:
             valor_total = (inventario['Cantidad'] * inventario['Precio']).sum()
-            st.markdown("""
+            st.markdown(f"""
             <div class="stats-container">
                 <h3>💰</h3>
-                <h2>${:,.0f}</h2>
+                <h2>${valor_total:,.0f}</h2>
                 <p>Valor Inventario</p>
             </div>
-            """.format(valor_total), unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
         
         with col4:
-            st.markdown("""
+            total_categorias = inventario['Categoría'].nunique()
+            st.markdown(f"""
             <div class="stats-container">
                 <h3>🏷️</h3>
-                <h2>{}</h2>
+                <h2>{total_categorias}</h2>
                 <p>Categorías</p>
             </div>
-            """.format(inventario['Categoría'].nunique()), unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
         
         st.markdown("---")
         
-        # Distribución por categorías (gráfico simple)
+        # Distribución por categorías
         st.markdown("### 📊 Distribución por Categorías")
         categoria_counts = inventario['Categoría'].value_counts()
         max_count = categoria_counts.max()
@@ -583,7 +574,5 @@ st.markdown("""
 <div style="text-align: center; color: #666; padding: 1rem;">
     <p>📦 <strong>Sistema de Inventario Bodega ALM</strong> | Desarrollado con ❤️ usando Streamlit</p>
     <p><small>Versión 2.0 - Sin Dependencias Externas</small></p>
-</div>
-""", unsafe_allow_html=True)
 </div>
 """, unsafe_allow_html=True)
