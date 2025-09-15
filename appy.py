@@ -138,7 +138,7 @@ with st.sidebar:
         }
         </style>
         <div class="sidebar-logo">
-            <img src="images/ALMlogo.png">
+            <img src="./images/ALMlogo.png">
         </div>
         """,
         unsafe_allow_html=True
