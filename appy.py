@@ -122,12 +122,11 @@ st.markdown("""
 # Logo en el Sidebar (Panel de Control)
 # ----------------------------
 with st.sidebar:
-    # Creamos 2 columnas, la primera es más chica y sirve como espacio para mover el logo
-    col1, col2 = st.columns([1, 3])
+    col1, col2 = st.columns([0.2, 3])
     with col1:
-        st.write("")  # columna vacía que actúa como espacio lateral
+        st.write("")  # espacio más pequeño
     with col2:
-        st.image("images/ALMlogo.png", width=150)
+        st.image("images/ALMlogo.jpg", width=150)
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
