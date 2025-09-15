@@ -127,11 +127,12 @@ with st.sidebar:
         <style>
         .logo-container {
             display: flex;
-            justify-content: center;  /* centra horizontalmente */
+            justify-content: flex-start;  /* alineado a la izquierda */
             width: 100%;
             margin-top: 20px;
             margin-bottom: 20px;
-            transition: all 0.3s ease; /* animación suave al cambiar tamaño */
+            padding-left: 20px;  /* margen desde la izquierda */
+            transition: all 0.3s ease;
         }
         </style>
         <div class="logo-container">
@@ -141,7 +142,6 @@ with st.sidebar:
     st.image("images/ALMlogo.jpg", width=150)
     st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
 # ----------------------------
