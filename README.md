@@ -30,3 +30,22 @@ Diseñar un **sistema digital de gestión de inventario** que permita:
 - Reducir errores y mejorar la eficiencia en la toma de decisiones.  
 
 ---
+
+## Actualizaciones del Proyecto
+
+- **v1.0 (Septiembre 08 de 2025)**  
+  - Se diseñaron y crearon las funciones para el CRUD del Inventario.
+  - Se agregó el Dashboard.
+  - Diseño básico. 
+
+- **v1.5 (Septiembre 11 de 2025)**  
+  - Mejoras visuales en la interfaz con CSS.
+  - Se añadió el Panel de Control.
+  - Correción de errores por código de producto duplicado.
+  - Se definieron de manera adecuada los datos.
+
+- **v2 (Septiembre 14 de 2025)**  
+  - Se añadió logo corporativo en el panel de Control.
+  - Se integró módulo de Reportes (top productos, valor de inventario, etc.).
+  - Se añadieron Alertas de Stock Bajo.
+  - Refinamiento con CSS (logo, estilo de sidebar, tipografía más clara).
