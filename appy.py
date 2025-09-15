@@ -176,7 +176,7 @@ with st.sidebar:
     col1, col2 = st.columns(2)
     with col1:
         st.metric("📦 Productos", total_productos)
-        st.metric("💰 Valor Total", f"${valor_total:,.2f}")
+        st.metric("💰 Valor Total", f"S/{valor_total:,.2f}")
     
     with col2:
         st.metric("📈 Stock Total", total_cantidad)
@@ -261,8 +261,8 @@ if opcion_key == "dashboard":
                         <h4>🏷️ {producto['Nombre']} (ID: {producto['ID']})</h4>
                         <p><strong>Categoría:</strong> {producto['Categoría']}</p>
                         <p><strong>Cantidad:</strong> {cantidad} unidades {stock_icon} <em>{stock_text}</em></p>
-                        <p><strong>Precio unitario:</strong> ${producto['Precio']:.2f}</p>
-                        <p><strong>Valor total:</strong> ${precio_total:.2f}</p>
+                        <p><strong>Precio unitario:</strong> S/{producto['Precio']:.2f}</p>
+                        <p><strong>Valor total:</strong> S/{precio_total:.2f}</p>
                     </div>
                 </div>
             </div>
@@ -283,7 +283,7 @@ if opcion_key == "dashboard":
                 "Precio": st.column_config.NumberColumn(
                     "Precio",
                     help="Precio por unidad",
-                    format="$%.2f"
+                    format="S/%.2f"
                 )
             }
         )
@@ -375,8 +375,8 @@ elif opcion_key == "actualizar":
         with col2:
             st.markdown("### 📊 Información Actual")
             st.metric("📦 Cantidad Actual", int(producto["Cantidad"]))
-            st.metric("💰 Precio Actual", f"${float(producto['Precio']):.2f}")
-            st.metric("💎 Valor Total", f"${float(producto['Precio']) * int(producto['Cantidad']):.2f}")
+            st.metric("💰 Precio Actual", f"S/{float(producto['Precio']):.2f}")
+            st.metric("💎 Valor Total", f"S/{float(producto['Precio']) * int(producto['Cantidad']):.2f}")
         
         if submit:
             actualizar_producto(id_sel, nombre, categoria, cantidad, precio)
@@ -406,8 +406,8 @@ elif opcion_key == "eliminar":
                 <h4>🏷️ {producto['Nombre']} (ID: {producto['ID']})</h4>
                 <p><strong>Categoría:</strong> {producto['Categoría']}</p>
                 <p><strong>Cantidad:</strong> {int(producto['Cantidad'])} unidades</p>
-                <p><strong>Precio:</strong> ${float(producto['Precio']):.2f}</p>
-                <p><strong>Valor Total:</strong> ${float(producto['Precio']) * int(producto['Cantidad']):.2f}</p>
+                <p><strong>Precio:</strong> S/{float(producto['Precio']):.2f}</p>
+                <p><strong>Valor Total:</strong> S/{float(producto['Precio']) * int(producto['Cantidad']):.2f}</p>
             </div>
             """, unsafe_allow_html=True)
             
@@ -471,7 +471,7 @@ elif opcion_key == "reportes":
             st.markdown(f"""
             <div class="stats-container">
                 <h3>💰</h3>
-                <h2>${valor_total:,.0f}</h2>
+                <h2>S/{valor_total:,.0f}</h2>
                 <p>Valor Inventario</p>
             </div>
             """, unsafe_allow_html=True)
@@ -518,8 +518,8 @@ elif opcion_key == "reportes":
             use_container_width=True,
             hide_index=True,
             column_config={
-                "Precio": st.column_config.NumberColumn("Precio", format="$%.2f"),
-                "Valor_Total": st.column_config.NumberColumn("Valor Total", format="$%.2f")
+                "Precio": st.column_config.NumberColumn("Precio", format="S/%.2f"),
+                "Valor_Total": st.column_config.NumberColumn("Valor Total", format="S/%.2f")
             }
         )
         
@@ -538,7 +538,7 @@ elif opcion_key == "reportes":
                         help="⚠️ Stock bajo - requiere reabastecimiento",
                         format="%d unidades"
                     ),
-                    "Precio": st.column_config.NumberColumn("Precio", format="$%.2f")
+                    "Precio": st.column_config.NumberColumn("Precio", format="S/%.2f")
                 }
             )
         else:
@@ -559,8 +559,8 @@ elif opcion_key == "reportes":
             use_container_width=True,
             column_config={
                 "Cantidad": st.column_config.NumberColumn("Total Unidades", format="%d"),
-                "Precio": st.column_config.NumberColumn("Precio Promedio", format="$%.2f"),
-                "Valor_Categoria": st.column_config.NumberColumn("Valor Categoría", format="$%.2f")
+                "Precio": st.column_config.NumberColumn("Precio Promedio", format="S/%.2f"),
+                "Valor_Categoria": st.column_config.NumberColumn("Valor Categoría", format="S/%.2f")
             }
         )
         
