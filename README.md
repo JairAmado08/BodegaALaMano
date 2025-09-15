@@ -24,7 +24,7 @@ Esto genera los siguientes problemas:
 
 Diseñar un **sistema digital de gestión de inventario** que permita:
 
-- Registrar productos con sus datos principales (ID, nombre, categoría, stock).  
+- Registrar productos con sus datos principales (ID, nombre, categoría, cantidad y precio).  
 - Controlar entradas y salidas de inventario en tiempo real.  
 - Consultar movimientos específicos de productos.  
 - Reducir errores y mejorar la eficiencia en la toma de decisiones.  
