@@ -133,7 +133,14 @@ with col2:
 # Logo en el Sidebar (Panel de Control)
 # ----------------------------
 with st.sidebar:
-    st.image("images/ALMlogo.png", width=150)
+    st.markdown(
+        """
+        <div style="display: flex; justify-content: center;">
+            <img src="images/ALMlogo.jpg" width="150">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     st.markdown("## 🛠️ Panel de Control")
 
 # ----------------------------
