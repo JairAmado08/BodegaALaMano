@@ -154,7 +154,7 @@ if "inventario" not in st.session_state:
         ["P002", "Arroz Costeño 1kg", "Abarrotes secos", 25, 5.00, "2024-01-16"],
         ["P003", "Leche Gloria tarro", "Lácteos y derivados", 18, 4.80, "2024-01-17"],
         ["P004", "Pan francés (unidad)", "Panadería y repostería", 50, 0.40, "2024-01-18"],
-        ["P005", "Atún Florida 170g", "Enlatados y conservas", 12, 6.00, "2024-01-19"]
+        ["P005", "Atún Florida 170g", "Enlatados y conservas", 2, 6.00, "2024-01-19"]
     ]
     for ejemplo in ejemplos:
         nuevo = pd.DataFrame([ejemplo], columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"])
