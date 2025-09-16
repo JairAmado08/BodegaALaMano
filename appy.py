@@ -1014,6 +1014,8 @@ elif opcion_key == "buscar_movimiento":
                 )
             else:
                 st.error(f"⚠️ No se encontraron movimientos que coincidan con '{busqueda}'.")
+        else:
+            st.info("✍️ Escriba el ID, tipo, producto, fecha o usuario para buscar un movimiento de inventario.")
     
     with col2:
         st.markdown("### 💡 Tips de Búsqueda")
@@ -1025,7 +1027,7 @@ elif opcion_key == "buscar_movimiento":
         - **Fecha:** 2024-01-15
         - **Usuario:** admin, carlos...
         """)
-
+    
 # Registrar Movimiento
 elif opcion_key == "registrar_movimiento":
     st.markdown("## ➕ Registrar Nuevo Movimiento")
