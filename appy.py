@@ -236,19 +236,10 @@ st.markdown(f"""
 <div class="main-header">
     <h1>📦 Sistema de Gestión de Inventario</h1>
     <h3>Bodega A La Mano, siempre al alcance de tu mano.</h3>
-    <p>¡Bienvenido/a, <strong>{display_name}</strong>! | Prototipo CRUD de gestión | Versión 2.1</p>
+    <p>¡Bienvenido/a, <strong>{display_name}</strong>! | Prototipo CRUD de gestión | Versión 2.5</p>
 </div>
 """, unsafe_allow_html=True)
 
-# Header principal
-st.markdown("""
-<div class="main-header">
-    <h1>📦 Sistema de Gestión de Inventario</h1>
-    <h3>Bodega A La Mano, siempre al alcance de tu mano.</h3>
-    <p>Prototipo CRUD de gestión | Versión 2.0</p>
-</div>
-""", unsafe_allow_html=True)
-    
 # ----------------------------
 # Datos iniciales (en memoria)
 # ----------------------------
