@@ -24,6 +24,27 @@ st.markdown("""
         text-align: center;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+
+        
+    .login-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem;
+        border-radius: 15px;
+        margin: 2rem auto;
+        color: white;
+        text-align: center;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        max-width: 500px;
+    }
+    
+    .user-info {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        color: white;
+        text-align: center;
+    }
     
     .success-message {
         background-color: #d4edda;
@@ -108,6 +129,117 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ----------------------------
+# Sistema de Autenticación
+# ----------------------------
+
+# Inicializar estado de sesión
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "username" not in st.session_state:
+    st.session_state.username = ""
+
+# Lista de empleados autorizados (en una implementación real, esto estaría en una base de datos)
+EMPLEADOS_AUTORIZADOS = {
+    "admin": "123456",
+    "carlos.rodriguez": "empleado123",
+    "maria.gonzalez": "empleado456",
+    "jose.martinez": "empleado789",
+    "ana.lopez": "empleado321",
+    "luis.torres": "empleado654"
+}
+
+def login_user(username, password):
+    """Función para autenticar usuario"""
+    if username in EMPLEADOS_AUTORIZADOS and EMPLEADOS_AUTORIZADOS[username] == password:
+        st.session_state.logged_in = True
+        st.session_state.username = username
+        return True
+    return False
+
+def logout_user():
+    """Función para cerrar sesión"""
+    st.session_state.logged_in = False
+    st.session_state.username = ""
+    st.rerun()
+
+def get_display_name(username):
+    """Convertir username en nombre para mostrar"""
+    name_map = {
+        "admin": "Administrador",
+        "carlos.rodriguez": "Carlos Rodríguez",
+        "maria.gonzalez": "María González", 
+        "jose.martinez": "José Martínez",
+        "ana.lopez": "Ana López",
+        "luis.torres": "Luis Torres"
+    }
+    return name_map.get(username, username.replace(".", " ").title())
+
+# ----------------------------
+# Pantalla de Login
+# ----------------------------
+if not st.session_state.logged_in:
+    # Centrar el contenido de login
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("""
+        <div class="login-container">
+            <h1>🏪 Bodega A La Mano</h1>
+            <h3>Sistema de Inventario</h3>
+            <p>Ingrese sus credenciales de empleado</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        with st.form("login_form"):
+            st.markdown("### 🔐 Iniciar Sesión")
+            
+            username = st.text_input("👤 Usuario", placeholder="nombre.apellido")
+            password = st.text_input("🔑 Contraseña", type="password", placeholder="Su contraseña")
+            
+            col_login1, col_login2 = st.columns(2)
+            with col_login1:
+                login_button = st.form_submit_button("🚀 Ingresar", use_container_width=True)
+            
+            if login_button:
+                if username and password:
+                    if login_user(username, password):
+                        st.success("✅ ¡Bienvenido! Accediendo al sistema...")
+                        st.rerun()
+                    else:
+                        st.error("❌ Usuario o contraseña incorrectos.")
+                else:
+                    st.warning("⚠️ Por favor, complete todos los campos.")
+        
+        # Información de usuarios de prueba
+        with st.expander("👥 Usuarios de Prueba"):
+            st.markdown("""
+            **Empleados autorizados:**
+            - `admin` / `123456`
+            - `carlos.rodriguez` / `empleado123`
+            - `maria.gonzalez` / `empleado456`
+            - `jose.martinez` / `empleado789`
+            - `ana.lopez` / `empleado321`
+            - `luis.torres` / `empleado654`
+            """)
+    
+    # Detener ejecución aquí si no está logueado
+    st.stop()
+
+# ----------------------------
+# Sistema Principal (solo si está logueado)
+# ----------------------------
+
+# Header principal con bienvenida
+display_name = get_display_name(st.session_state.username)
+st.markdown(f"""
+<div class="main-header">
+    <h1>📦 Sistema de Gestión de Inventario</h1>
+    <h3>Bodega A La Mano, siempre al alcance de tu mano.</h3>
+    <p>¡Bienvenido/a, <strong>{display_name}</strong>! | Prototipo CRUD de gestión | Versión 2.1</p>
+</div>
+""", unsafe_allow_html=True)
+
 # Header principal
 st.markdown("""
 <div class="main-header">
@@ -168,6 +300,19 @@ def obtener_estadisticas():
 # Sidebar (Panel de Control)
 # ----------------------------
 with st.sidebar:
+    # Información del usuario logueado
+    st.markdown(f"""
+    <div class="user-info">
+        <h4>👤 Usuario Activo</h4>
+        <p><strong>{display_name}</strong></p>
+        <p><small>Empleado de Bodega ALM</small></p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Botón de cerrar sesión
+    if st.button("🚪 Cerrar Sesión", use_container_width=True):
+        logout_user()
+    
     # Logo
     st.markdown(
         """
