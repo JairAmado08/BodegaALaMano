@@ -243,6 +243,8 @@ st.markdown(f"""
 # ----------------------------
 # Datos iniciales (en memoria)
 # ----------------------------
+
+# Inicializar DataFrame de inventario
 if "inventario" not in st.session_state:
     st.session_state.inventario = pd.DataFrame(columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"])
     # Datos de ejemplo
@@ -259,8 +261,25 @@ if "inventario" not in st.session_state:
 
 inventario = st.session_state.inventario
 
+# Inicializar DataFrame de movimientos
+if "movimientos" not in st.session_state:
+    st.session_state.movimientos = pd.DataFrame(columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Usuario", "Observaciones"])
+    # Datos de ejemplo de movimientos
+    movimientos_ejemplo = [
+        ["M001", "Entrada", "P001", "Inca Kola 1.5L", 20, "2024-01-15", "admin", "Compra inicial"],
+        ["M002", "Salida", "P001", "Inca Kola 1.5L", 5, "2024-01-16", "carlos.rodriguez", "Venta"],
+        ["M003", "Entrada", "P002", "Arroz Costeño 1kg", 30, "2024-01-16", "maria.gonzalez", "Reposición"],
+        ["M004", "Salida", "P002", "Arroz Costeño 1kg", 5, "2024-01-17", "jose.martinez", "Venta"],
+        ["M005", "Ajuste", "P005", "Atún Florida 170g", -3, "2024-01-19", "admin", "Producto vencido"]
+    ]
+    for movimiento in movimientos_ejemplo:
+        nuevo_mov = pd.DataFrame([movimiento], columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Usuario", "Observaciones"])
+        st.session_state.movimientos = pd.concat([st.session_state.movimientos, nuevo_mov], ignore_index=True)
+
+movimientos = st.session_state.movimientos
+
 # ----------------------------
-# Funciones CRUD
+# Funciones CRUD para Inventario
 # ----------------------------
 def Registrar_producto(id_, nombre, categoria, cantidad, precio):
     fecha_actual = datetime.now().strftime("%Y-%m-%d")
@@ -286,6 +305,65 @@ def obtener_estadisticas():
     productos_bajo_stock = len(inventario[inventario["Cantidad"] < 5])
     
     return total_productos, total_cantidad, valor_total, productos_bajo_stock
+
+# ----------------------------
+# Funciones CRUD para Movimientos
+# ----------------------------
+
+def registrar_movimiento(id_mov, tipo, producto_id, cantidad, observaciones=""):
+    fecha_actual = datetime.now().strftime("%Y-%m-%d")
+    
+    # Obtener nombre del producto
+    producto_info = inventario[inventario["ID"] == producto_id]
+    if not producto_info.empty:
+        producto_nombre = producto_info.iloc[0]["Nombre"]
+    else:
+        producto_nombre = "Producto no encontrado"
+    
+    nuevo_movimiento = pd.DataFrame([[id_mov, tipo, producto_id, producto_nombre, cantidad, fecha_actual, st.session_state.username, observaciones]], 
+                                   columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Usuario", "Observaciones"])
+    st.session_state.movimientos = pd.concat([st.session_state.movimientos, nuevo_movimiento], ignore_index=True)
+    
+    # Actualizar inventario según el tipo de movimiento
+    if tipo in ["Entrada", "Devolución"]:
+        actualizar_stock_producto(producto_id, cantidad)
+    elif tipo in ["Salida", "Ajuste"] and cantidad < 0:
+        actualizar_stock_producto(producto_id, cantidad)
+    elif tipo == "Salida":
+        actualizar_stock_producto(producto_id, -cantidad)
+
+def actualizar_stock_producto(producto_id, cantidad_cambio):
+    """Actualiza el stock del producto según el movimiento"""
+    idx = inventario[inventario["ID"] == producto_id].index
+    if not idx.empty:
+        nueva_cantidad = max(0, inventario.loc[idx[0], "Cantidad"] + cantidad_cambio)
+        st.session_state.inventario.loc[idx[0], "Cantidad"] = nueva_cantidad
+
+def eliminar_movimiento(id_movimiento):
+    """Elimina un movimiento (sin revertir cambios de stock)"""
+    st.session_state.movimientos = st.session_state.movimientos[st.session_state.movimientos["ID_Movimiento"] != id_movimiento]
+
+def actualizar_movimiento(id_mov, tipo, producto_id, cantidad, fecha, observaciones):
+    """Actualiza los datos de un movimiento"""
+    idx = st.session_state.movimientos[st.session_state.movimientos["ID_Movimiento"] == id_mov].index
+    if not idx.empty:
+        # Obtener nombre del producto
+        producto_info = inventario[inventario["ID"] == producto_id]
+        producto_nombre = producto_info.iloc[0]["Nombre"] if not producto_info.empty else "Producto no encontrado"
+        
+        st.session_state.movimientos.loc[idx[0], ["Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Observaciones"]] = [tipo, producto_id, producto_nombre, cantidad, fecha, observaciones]
+
+def obtener_estadisticas_movimientos():
+    """Obtiene estadísticas de movimientos"""
+    if movimientos.empty:
+        return 0, 0, 0, 0
+    
+    total_movimientos = len(movimientos)
+    entradas = len(movimientos[movimientos["Tipo"] == "Entrada"])
+    salidas = len(movimientos[movimientos["Tipo"] == "Salida"])
+    ajustes = len(movimientos[movimientos["Tipo"].isin(["Ajuste", "Devolución"])])
+    
+    return total_movimientos, entradas, salidas, ajustes
 
 # ----------------------------
 # Sidebar (Panel de Control)
@@ -814,7 +892,312 @@ elif opcion_key == "reportes":
     else:
         st.info("📭 No hay datos suficientes para generar reportes.")
 
+# Dashboard de Movimientos
+elif opcion_key == "movimientos_dashboard":
+    st.markdown("## 📦 Dashboard de Movimientos")
+    
+    # Estadísticas de movimientos
+    total_movimientos, entradas, salidas, ajustes = obtener_estadisticas_movimientos()
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("📊 Total Movimientos", total_movimientos)
+    with col2:
+        st.metric("⬆️ Entradas", entradas)
+    with col3:
+        st.metric("⬇️ Salidas", salidas)
+    with col4:
+        st.metric("🔄 Ajustes/Devoluciones", ajustes)
+    
+    if not movimientos.empty:
+        # Filtros
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            tipos = ['Todos'] + sorted(movimientos['Tipo'].unique().tolist())
+            tipo_filtro = st.selectbox("🏷️ Filtrar por tipo:", tipos)
+        
+        with col2:
+            productos_mov = ['Todos'] + sorted(movimientos['Producto_ID'].unique().tolist())
+            producto_filtro = st.selectbox("📦 Filtrar por producto:", productos_mov)
+        
+        with col3:
+            usuarios = ['Todos'] + sorted(movimientos['Usuario'].unique().tolist())
+            usuario_filtro = st.selectbox("👤 Filtrar por usuario:", usuarios)
+        
+        # Aplicar filtros
+        df_filtrado = movimientos.copy()
+        if tipo_filtro != 'Todos':
+            df_filtrado = df_filtrado[df_filtrado['Tipo'] == tipo_filtro]
+        if producto_filtro != 'Todos':
+            df_filtrado = df_filtrado[df_filtrado['Producto_ID'] == producto_filtro]
+        if usuario_filtro != 'Todos':
+            df_filtrado = df_filtrado[df_filtrado['Usuario'] == usuario_filtro]
+        
+        # Mostrar movimientos
+        st.markdown("### 📋 Historial de Movimientos")
+        
+        # Ordenar por fecha descendente
+        df_filtrado = df_filtrado.sort_values('Fecha', ascending=False)
+        
+        for _, movimiento in df_filtrado.iterrows():
+            # Determinar color según tipo de movimiento
+            if movimiento['Tipo'] == 'Entrada':
+                card_style = "border-left: 4px solid #28a745; background: #f8fff8;"
+                icon = "⬆️"
+            elif movimiento['Tipo'] == 'Salida':
+                card_style = "border-left: 4px solid #dc3545; background: #fff5f5;"
+                icon = "⬇️"
+            elif movimiento['Tipo'] == 'Devolución':
+                card_style = "border-left: 4px solid #17a2b8; background: #f0f8ff;"
+                icon = "🔄"
+            else:  # Ajuste
+                card_style = "border-left: 4px solid #ffc107; background: #fffbf0;"
+                icon = "⚖️"
+            
+            cantidad_text = f"+{movimiento['Cantidad']}" if movimiento['Cantidad'] > 0 else str(movimiento['Cantidad'])
+            
+            st.markdown(f"""
+            <div class="product-card" style="{card_style}">
+                <h4>{icon} {movimiento['Tipo']} - ID: {movimiento['ID_Movimiento']}</h4>
+                <p><strong>Producto:</strong> {movimiento['Producto_Nombre']} ({movimiento['Producto_ID']})</p>
+                <p><strong>Cantidad:</strong> {cantidad_text} unidades</p>
+                <p><strong>Fecha:</strong> {movimiento['Fecha']}</p>
+                <p><strong>Usuario:</strong> {movimiento['Usuario']}</p>
+                <p><strong>Observaciones:</strong> {movimiento['Observaciones'] if movimiento['Observaciones'] else 'Sin observaciones'}</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Vista detallada
+        st.markdown("### 📋 Vista Detallada")
+        st.dataframe(
+            df_filtrado,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Cantidad": st.column_config.NumberColumn("Cantidad", format="%d"),
+                "Fecha": st.column_config.DateColumn("Fecha")
+            }
+        )
+    else:
+        st.info("📭 No hay movimientos registrados.")
 
+# Buscar Movimiento
+elif opcion_key == "buscar_movimiento":
+    st.markdown("## 🔍 Buscar Movimiento")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        busqueda = st.text_input("🔎 Ingrese ID de movimiento, tipo, producto o fecha:")
+        
+        if busqueda:
+            resultados = movimientos[
+                movimientos["ID_Movimiento"].str.contains(busqueda, case=False, na=False) |
+                movimientos["Tipo"].str.contains(busqueda, case=False, na=False) |
+                movimientos["Producto_ID"].str.contains(busqueda, case=False, na=False) |
+                movimientos["Producto_Nombre"].str.contains(busqueda, case=False, na=False) |
+                movimientos["Fecha"].str.contains(busqueda, case=False, na=False) |
+                movimientos["Usuario"].str.contains(busqueda, case=False, na=False)
+            ]
+            
+            if not resultados.empty:
+                st.success(f"✅ Se encontraron {len(resultados)} movimientos que coinciden con '{busqueda}'.")
+                
+                st.dataframe(
+                    resultados.sort_values('Fecha', ascending=False),
+                    use_container_width=True,
+                    hide_index=True,
+                    column_config={
+                        "Cantidad": st.column_config.NumberColumn("Cantidad", format="%d"),
+                        "Fecha": st.column_config.DateColumn("Fecha")
+                    }
+                )
+            else:
+                st.error(f"⚠️ No se encontraron movimientos que coincidan con '{busqueda}'.")
+    
+    with col2:
+        st.markdown("### 💡 Tips de Búsqueda")
+        st.info("""
+        Puedes buscar por:
+        - **ID:** M001, M002...
+        - **Tipo:** Entrada, Salida, Ajuste, Devolución
+        - **Producto:** P001, Inca Kola...
+        - **Fecha:** 2024-01-15
+        - **Usuario:** admin, carlos...
+        """)
+
+# Registrar Movimiento
+elif opcion_key == "registrar_movimiento":
+    st.markdown("## ➕ Registrar Nuevo Movimiento")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        with st.form("form_registrar_movimiento", clear_on_submit=True):
+            st.markdown("### 📝 Información del Movimiento")
+            
+            col_form1, col_form2 = st.columns(2)
+            with col_form1:
+                id_movimiento = st.text_input("🆔 ID del movimiento", placeholder="Ej: M001")
+                tipo_movimiento = st.selectbox("🏷️ Tipo de movimiento", 
+                                             options=["Entrada", "Salida", "Ajuste", "Devolución"])
+                
+                # Productos disponibles
+                productos_disponibles = inventario["ID"].tolist() if not inventario.empty else []
+                if productos_disponibles:
+                    producto_seleccionado = st.selectbox("📦 Producto", productos_disponibles)
+                else:
+                    st.error("❌ No hay productos disponibles. Primero registra algunos productos.")
+                    st.stop()
+            
+            with col_form2:
+                if tipo_movimiento == "Ajuste":
+                    cantidad = st.number_input("📊 Cantidad (+ para agregar, - para quitar)", 
+                                             step=1, format="%d", help="Usa números negativos para ajustes de disminución")
+                else:
+                    cantidad = st.number_input("📊 Cantidad", min_value=1, step=1, value=1)
+                
+                observaciones = st.text_area("📝 Observaciones", placeholder="Comentarios adicionales...")
+            
+            submit = st.form_submit_button("✅ Registrar Movimiento", use_container_width=True)
+    
+    with col2:
+        st.markdown("### 💡 Tipos de Movimiento")
+        st.info("""
+        **📥 Entrada:** Compras, recepciones
+        
+        **📤 Salida:** Ventas, entregas
+        
+        **⚖️ Ajuste:** Correcciones de inventario
+        
+        **🔄 Devolución:** Returns de clientes
+        """)
+        
+        # Mostrar stock actual del producto seleccionado
+        if 'producto_seleccionado' in locals():
+            stock_actual = inventario[inventario["ID"] == producto_seleccionado]["Cantidad"].iloc[0]
+            st.metric("📦 Stock Actual", int(stock_actual))
+    
+    if submit:
+        if id_movimiento and productos_disponibles:
+            if id_movimiento in movimientos["ID_Movimiento"].values:
+                st.error("⚠️ Ya existe un movimiento con este ID.")
+            else:
+                registrar_movimiento(id_movimiento, tipo_movimiento, producto_seleccionado, cantidad, observaciones)
+                st.success("✅ Movimiento registrado correctamente.")
+                st.balloons()
+        else:
+            st.error("❌ Debes completar al menos ID y seleccionar un producto.")
+
+# Actualizar Movimiento
+elif opcion_key == "actualizar_movimiento":
+    st.markdown("## ✏️ Actualizar Movimiento")
+    
+    ids_movimientos = movimientos["ID_Movimiento"].tolist()
+    if ids_movimientos:
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            id_mov_sel = st.selectbox("🔍 Selecciona un movimiento por ID", ids_movimientos)
+            movimiento = movimientos[movimientos["ID_Movimiento"] == id_mov_sel].iloc[0]
+            
+            st.markdown(f"### 📋 Movimiento Actual: **{movimiento['ID_Movimiento']}**")
+            
+            with st.form("form_actualizar_movimiento"):
+                st.markdown("#### 📝 Nuevos Datos")
+                
+                col_form1, col_form2 = st.columns(2)
+                with col_form1:
+                    tipo_movimiento = st.selectbox("🏷️ Tipo de movimiento", 
+                                                 options=["Entrada", "Salida", "Ajuste", "Devolución"],
+                                                 index=["Entrada", "Salida", "Ajuste", "Devolución"].index(movimiento["Tipo"]))
+                    
+                    productos_disponibles = inventario["ID"].tolist()
+                    if movimiento["Producto_ID"] in productos_disponibles:
+                        producto_idx = productos_disponibles.index(movimiento["Producto_ID"])
+                    else:
+                        producto_idx = 0
+                    
+                    producto_seleccionado = st.selectbox("📦 Producto", productos_disponibles, index=producto_idx)
+                
+                with col_form2:
+                    cantidad = st.number_input("📊 Cantidad", value=int(movimiento["Cantidad"]), step=1)
+                    fecha = st.date_input("📅 Fecha", value=pd.to_datetime(movimiento["Fecha"]).date())
+                
+                observaciones = st.text_area("📝 Observaciones", value=movimiento["Observaciones"])
+                
+                submit = st.form_submit_button("🔄 Actualizar Movimiento", use_container_width=True)
+        
+        with col2:
+            st.markdown("### 📊 Información Actual")
+            st.info(f"""
+            **Tipo:** {movimiento['Tipo']}
+            
+            **Producto:** {movimiento['Producto_Nombre']}
+            
+            **Cantidad:** {movimiento['Cantidad']}
+            
+            **Fecha:** {movimiento['Fecha']}
+            
+            **Usuario:** {movimiento['Usuario']}
+            """)
+        
+        if submit:
+            fecha_str = fecha.strftime("%Y-%m-%d")
+            actualizar_movimiento(id_mov_sel, tipo_movimiento, producto_seleccionado, cantidad, fecha_str, observaciones)
+            st.success("✅ Movimiento actualizado correctamente.")
+            st.rerun()
+    else:
+        st.info("📭 No hay movimientos registrados para actualizar.")
+
+# Eliminar Movimiento
+elif opcion_key == "eliminar_movimiento":
+    st.markdown("## 🗑️ Eliminar Movimiento")
+    
+    ids_movimientos = movimientos["ID_Movimiento"].tolist()
+    if ids_movimientos:
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            id_mov_sel = st.selectbox("🔍 Selecciona un movimiento por ID", ids_movimientos)
+            movimiento = movimientos[movimientos["ID_Movimiento"] == id_mov_sel].iloc[0]
+            
+            st.markdown("### ⚠️ Movimiento a Eliminar")
+            
+            st.markdown(f"""
+            <div class="product-card" style="border-left: 4px solid #dc3545; background: #fff5f5;">
+                <h4>🏷️ {movimiento['ID_Movimiento']} - {movimiento['Tipo']}</h4>
+                <p><strong>Producto:</strong> {movimiento['Producto_Nombre']} ({movimiento['Producto_ID']})</p>
+                <p><strong>Cantidad:</strong> {movimiento['Cantidad']} unidades</p>
+                <p><strong>Fecha:</strong> {movimiento['Fecha']}</p>
+                <p><strong>Usuario:</strong> {movimiento['Usuario']}</p>
+                <p><strong>Observaciones:</strong> {movimiento['Observaciones'] if movimiento['Observaciones'] else 'Sin observaciones'}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            confirmacion = st.checkbox(f"✅ Confirmo que deseo eliminar el movimiento **{movimiento['ID_Movimiento']}**")
+            
+            if confirmacion:
+                if st.button("🗑️ ELIMINAR MOVIMIENTO", type="primary", use_container_width=True):
+                    eliminar_movimiento(id_mov_sel)
+                    st.success("✅ Movimiento eliminado correctamente.")
+                    st.rerun()
+        
+        with col2:
+            st.markdown("### ⚠️ Advertencia")
+            st.warning("""
+            **¡Atención!**
+            
+            Esta acción eliminará permanentemente el movimiento del historial.
+            
+            **El stock del producto NO se revertirá automáticamente.**
+            
+            Si necesitas revertir el stock, hazlo manualmente mediante un ajuste.
+            """)
+    else:
+        st.info("📭 No hay movimientos registrados para eliminar.")
 
 # ----------------------------
 # Footer
