@@ -74,6 +74,6 @@ Consecuencia: la toma de decisiones sobre compras y ventas se ve limitada, afect
   - Refinamiento con CSS (logo, estilo de sidebar, tipografía más clara).
 
 - **v2.5 (Septiembre 15 de 2025)**  
-  - Se añadió un login.
+  - Se añadió un login y un cierre de sesión.
   - Se añadió el CRUD para los movimientos de inventario.
-  - Se añadió un historial de movimientos.
+  - Se añadió un historial de movimientos junto a su respectivo dashboard.
