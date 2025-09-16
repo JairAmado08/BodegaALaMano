@@ -2,56 +2,6 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-# Datos de usuarios (puedes agregar más usuarios aquí)
-USUARIOS = {
-    "admin": "123456",
-    "gerente": "bodega2024", 
-    "empleado": "inventario123"
-}
-
-def verificar_login(usuario, password):
-    return USUARIOS.get(usuario) == password
-
-def mostrar_login():
-    st.markdown("""
-    <div class="main-header">
-        <h1>🔐 Acceso al Sistema</h1>
-        <h3>Bodega A La Mano - Sistema de Inventario</h3>
-        <p>Ingrese sus credenciales para continuar</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns([1, 2, 1])
-    
-    with col2:
-        st.markdown("### 👤 Iniciar Sesión")
-        
-        with st.form("login_form"):
-            usuario = st.text_input("🧑‍💼 Usuario", placeholder="Ingrese su usuario")
-            password = st.text_input("🔑 Contraseña", type="password", placeholder="Ingrese su contraseña")
-            
-            col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
-            with col_btn2:
-                login_btn = st.form_submit_button("🚀 Ingresar", use_container_width=True)
-            
-            if login_btn:
-                if verificar_login(usuario, password):
-                    st.session_state.logged_in = True
-                    st.session_state.current_user = usuario
-                    st.success("✅ ¡Login exitoso!")
-                    st.rerun()
-                else:
-                    st.error("❌ Usuario o contraseña incorrectos")
-        
-        st.markdown("---")
-        st.info("""
-        **👥 Usuarios de prueba:**
-        - admin / 123456
-        - gerente / bodega2024  
-        - empleado / inventario123
-        """)
-
-
 # ----------------------------
 # Configuración de la App
 # ----------------------------
@@ -171,7 +121,6 @@ st.markdown("""
 # ----------------------------
 # Logo en el Sidebar (Panel de Control)
 # ----------------------------
-
 with st.sidebar:
     st.markdown(
         """
@@ -193,29 +142,6 @@ with st.sidebar:
         """,
         unsafe_allow_html=True
     )
-    
-    # Información del usuario logueado
-        usuario_mostrar = st.session_state.current_user.title() if st.session_state.current_user else "Usuario"
-        
-        st.markdown(f"""
-        <div style="
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            text-align: center;">
-            <h4>👤 Bienvenido</h4>
-            <h3>{usuario_mostrar}</h3>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Botón de cerrar sesión
-    if st.button("🚪 Cerrar Sesión", use_container_width=True):
-        st.session_state.logged_in = False
-        st.session_state.current_user = ""
-        st.rerun()
-    
     st.markdown("## 🛠️ Panel de Control")
 # ----------------------------
 # Datos iniciales (en memoria)
@@ -235,17 +161,6 @@ if "inventario" not in st.session_state:
         st.session_state.inventario = pd.concat([st.session_state.inventario, nuevo], ignore_index=True)
 
 inventario = st.session_state.inventario
-
-
-# Inicializar estado de login
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-    st.session_state.current_user = ""
-
-# Verificar si el usuario está logueado
-if not st.session_state.logged_in:
-    mostrar_login()
-    st.stop()
 
 # ----------------------------
 # Funciones CRUD
