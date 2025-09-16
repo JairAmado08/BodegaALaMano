@@ -195,18 +195,20 @@ with st.sidebar:
     )
     
     # Información del usuario logueado
-    st.markdown(f"""
-    <div style="
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 1rem;
-        border-radius: 10px;
-        margin-bottom: 1rem;
-        text-align: center;">
-        <h4>👤 Bienvenido</h4>
-        <h3>{st.session_state.current_user.title()}</h3>
-    </div>
-    """, unsafe_allow_html=True)
+        usuario_mostrar = st.session_state.current_user.title() if st.session_state.current_user else "Usuario"
+        
+        st.markdown(f"""
+        <div style="
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;">
+            <h4>👤 Bienvenido</h4>
+            <h3>{usuario_mostrar}</h3>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Botón de cerrar sesión
     if st.button("🚪 Cerrar Sesión", use_container_width=True):
