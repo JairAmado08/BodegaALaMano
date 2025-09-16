@@ -52,13 +52,13 @@ Consecuencia: la toma de decisiones sobre compras y ventas se ve limitada, afect
   - Se diseñó el Dashboard.
   - Diseño básico. 
 
-- **v1.5 (Septiembre 11 de 2025)**  
+- **v1.5 (Septiembre 13 de 2025)**  
   - Mejoras visuales en la interfaz con CSS.
   - Se añadió el Panel de Control.
   - Correción de errores por código de producto duplicado.
   - Se definieron de manera adecuada los datos.
 
-- **v2.0 (Septiembre 13 de 2025)**  
+- **v2.0 (Septiembre 14 de 2025)**  
   - Se añadió logo corporativo en el panel de Control.
   - Se integró módulo de Reportes (top productos, valor de inventario, etc.).
   - Se añadieron Alertas de Stock Bajo.
