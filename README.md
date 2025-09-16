@@ -1,7 +1,7 @@
 # Sistema de Gestión de Bodega ALM (A La Mano)
 **Proyecto integrador – Grupo 5**
 
-**NTEGRANTES:**
+**INTEGRANTES:**
 - Alexander Richard Galiano Diaz
 - Facundo Ismael Alfaro Salazar
 - Rudy Sebastian Garcia Cucchi
