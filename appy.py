@@ -2,15 +2,114 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
+# Base de datos de usuarios
+USUARIOS = {
+    "admin": {"password": "admin123", "role": "Administrador", "name": "Administrador del Sistema"},
+    "empleado1": {"password": "emp123", "role": "Empleado", "name": "Juan Pérez"},
+    "empleado2": {"password": "emp456", "role": "Empleado", "name": "María García"},
+    "supervisor": {"password": "sup123", "role": "Supervisor", "name": "Carlos López"}
+}
+
+# ----------------------------
+# FUNCIONES DE AUTENTICACIÓN (agregar después de los imports)
+# ----------------------------
+
+def verificar_login(usuario, password):
+    """Verifica las credenciales del usuario"""
+    if usuario in USUARIOS:
+        if USUARIOS[usuario]["password"] == password:
+            return True, USUARIOS[usuario]["role"], USUARIOS[usuario]["name"]
+    return False, None, None
+
+def mostrar_login():
+    """Muestra la página de login"""
+    st.markdown("""
+    <div class="main-header">
+        <h1>🔐 Sistema de Autenticación</h1>
+        <h3>Bodega A La Mano - Acceso Seguro</h3>
+        <p>Ingrese sus credenciales para acceder al sistema</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("### 👤 Iniciar Sesión")
+        
+        with st.form("login_form"):
+            usuario = st.text_input("👤 Usuario", placeholder="Ingrese su usuario")
+            password = st.text_input("🔒 Contraseña", type="password", placeholder="Ingrese su contraseña")
+            
+            col_btn1, col_btn2 = st.columns(2)
+            with col_btn1:
+                login_btn = st.form_submit_button("🚀 Iniciar Sesión", use_container_width=True)
+            with col_btn2:
+                demo_btn = st.form_submit_button("👁️ Ver Demo", use_container_width=True)
+        
+        if login_btn:
+            if usuario and password:
+                es_valido, rol, nombre = verificar_login(usuario, password)
+                if es_valido:
+                    st.session_state.logged_in = True
+                    st.session_state.usuario = usuario
+                    st.session_state.rol = rol
+                    st.session_state.nombre = nombre
+                    st.success(f"✅ ¡Bienvenido {nombre}!")
+                    st.balloons()
+                    st.rerun()
+                else:
+                    st.error("❌ Usuario o contraseña incorrectos")
+            else:
+                st.error("❌ Por favor complete todos los campos")
+        
+        if demo_btn:
+            st.session_state.logged_in = True
+            st.session_state.usuario = "demo"
+            st.session_state.rol = "Demo"
+            st.session_state.nombre = "Usuario Demo"
+            st.success("✅ ¡Acceso demo activado!")
+            st.rerun()
+        
+        # Información de usuarios de prueba
+        st.markdown("---")
+        st.markdown("### 💡 Usuarios de Prueba")
+        st.info("""
+        **Administrador:**
+        - Usuario: `admin` | Contraseña: `admin123`
+        
+        **Empleados:**
+        - Usuario: `empleado1` | Contraseña: `emp123`
+        - Usuario: `empleado2` | Contraseña: `emp456`
+        
+        **Supervisor:**
+        - Usuario: `supervisor` | Contraseña: `sup123`
+        
+        **O usa el botón "Ver Demo" para acceso rápido**
+        """)
+
+def cerrar_sesion():
+    """Cierra la sesión del usuario"""
+    st.session_state.logged_in = False
+    if 'usuario' in st.session_state:
+        del st.session_state.usuario
+    if 'rol' in st.session_state:
+        del st.session_state.rol
+    if 'nombre' in st.session_state:
+        del st.session_state.nombre
+    st.rerun()
+
+
+
 # ----------------------------
 # Configuración de la App
 # ----------------------------
 st.set_page_config(
-    page_title="Bodega ALM - Inventario", 
+    page_title="Bodega ALM - Sistema de Inventario", 
     layout="wide",
     page_icon="📦",
     initial_sidebar_state="expanded"
 )
+
 
 # CSS personalizado para mejorar el diseño
 st.markdown("""
@@ -108,12 +207,31 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ----------------------------
+# VERIFICACIÓN DE AUTENTICACIÓN 
+# ----------------------------
+
+# Inicializar estado de login
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+# Verificar si el usuario está logueado
+if not st.session_state.logged_in:
+    mostrar_login()
+    st.stop()  # Detiene la ejecución del resto del código
+
 # Header principal
-st.markdown("""
+usuario_actual = st.session_state.get('nombre', 'Usuario')
+rol_actual = st.session_state.get('rol', 'Sin rol')
+
+st.markdown(f"""
 <div class="main-header">
     <h1>📦 Sistema de Gestión de Inventario</h1>
     <h3>Bodega A La Mano, siempre al alcance de tu mano.</h3>
     <p>Prototipo CRUD de gestión | Versión 2.0</p>
+    <div style="margin-top: 1rem; padding: 0.5rem; background: rgba(255,255,255,0.2); border-radius: 5px;">
+        <strong>👤 Usuario:</strong> {usuario_actual} | <strong>🎭 Rol:</strong> {rol_actual}
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -142,7 +260,23 @@ with st.sidebar:
         """,
         unsafe_allow_html=True
     )
+
+    # Información del usuario
+    st.markdown("## 👤 Usuario Activo")
+    st.markdown(f"**Nombre:** {st.session_state.get('nombre', 'Usuario')}")
+    st.markdown(f"**Rol:** {st.session_state.get('rol', 'Sin rol')}")
+    st.markdown(f"**Usuario:** {st.session_state.get('usuario', 'N/A')}")
+    
+    # Botón de cerrar sesión
+    if st.button("🚪 Cerrar Sesión", use_container_width=True, type="secondary"):
+        cerrar_sesion()
+    
+    st.markdown("---")
     st.markdown("## 🛠️ Panel de Control")
+    
+
+
+
 # ----------------------------
 # Datos iniciales (en memoria)
 # ----------------------------
@@ -223,6 +357,95 @@ with st.sidebar:
     
     opcion = st.radio("", list(menu_options.keys()), key="menu_radio")
     opcion_key = menu_options[opcion]
+
+  # Menú de navegación con control de permisos
+    st.markdown("### 🧭 Navegación")
+    
+    # Definir permisos por rol
+    permisos = {
+        "Administrador": ["dashboard", "buscar", "Registrar", "actualizar", "eliminar", "reportes"],
+        "Supervisor": ["dashboard", "buscar", "Registrar", "actualizar", "reportes"],
+        "Empleado": ["dashboard", "buscar", "Registrar"],
+        "Demo": ["dashboard", "buscar", "reportes"]
+    }
+    
+    rol_usuario = st.session_state.get('rol', 'Demo')
+    permisos_usuario = permisos.get(rol_usuario, ["dashboard"])
+    
+    # Opciones de menú filtradas por permisos
+    menu_options = {}
+    if "dashboard" in permisos_usuario:
+        menu_options["📋 Dashboard"] = "dashboard"
+    if "buscar" in permisos_usuario:
+        menu_options["🔎 Buscar Producto"] = "buscar"
+    if "Registrar" in permisos_usuario:
+        menu_options["➕ Registrar Producto"] = "Registrar"
+    if "actualizar" in permisos_usuario:
+        menu_options["✏️ Actualizar Producto"] = "actualizar"
+    if "eliminar" in permisos_usuario:
+        menu_options["🗑️ Eliminar Producto"] = "eliminar"
+    if "reportes" in permisos_usuario:
+        menu_options["📊 Reportes"] = "reportes"
+    
+    opcion = st.radio("", list(menu_options.keys()), key="menu_radio")
+    opcion_key = menu_options[opcion]
+    
+    # Mostrar permisos del usuario
+    st.markdown("---")
+    st.markdown("### 🎭 Permisos del Rol")
+    permisos_texto = {
+        "dashboard": "📋 Ver Dashboard",
+        "buscar": "🔎 Buscar Productos", 
+        "Registrar": "➕ Registrar Productos",
+        "actualizar": "✏️ Actualizar Productos",
+        "eliminar": "🗑️ Eliminar Productos",
+        "reportes": "📊 Ver Reportes"
+    }
+    
+    for permiso in permisos_usuario:
+        if permiso in permisos_texto:
+            st.markdown(f"✅ {permisos_texto[permiso]}")
+    
+    # Mostrar permisos denegados
+    todos_permisos = ["dashboard", "buscar", "Registrar", "actualizar", "eliminar", "reportes"]
+    permisos_denegados = [p for p in todos_permisos if p not in permisos_usuario]
+    
+    if permisos_denegados:
+        st.markdown("**Acceso Restringido:**")
+        for permiso in permisos_denegados:
+            if permiso in permisos_texto:
+                st.markdown(f"❌ {permisos_texto[permiso]}")
+
+# ----------------------------
+# AGREGAR CONTROL DE PERMISOS EN LAS SECCIONES
+# ----------------------------
+
+# En cada sección (Registrar, actualizar, eliminar), agregar verificación de permisos.
+# Por ejemplo, al inicio de la sección "Registrar Producto":
+
+elif opcion_key == "Registrar":
+    if "Registrar" not in permisos.get(st.session_state.get('rol', 'Demo'), []):
+        st.error("❌ No tienes permisos para Registrar productos")
+        st.info("💡 Contacta al administrador para obtener los permisos necesarios")
+        st.stop()
+    
+    # El resto del código de Registrar se mantiene igual...
+
+# Y similar para actualizar y eliminar:
+
+elif opcion_key == "actualizar":
+    if "actualizar" not in permisos.get(st.session_state.get('rol', 'Demo'), []):
+        st.error("❌ No tienes permisos para actualizar productos")
+        st.info("💡 Contacta al administrador para obtener los permisos necesarios")
+        st.stop()
+    
+    # El resto del código de actualizar se mantiene igual...
+
+elif opcion_key == "eliminar":
+    if "eliminar" not in permisos.get(st.session_state.get('rol', 'Demo'), []):
+        st.error("❌ No tienes permisos para eliminar productos")
+        st.info("💡 Contacta al administrador para obtener los permisos necesarios")
+        st.stop()
 
 # ----------------------------
 # Contenido principal
