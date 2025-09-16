@@ -816,6 +816,6 @@ st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #666; padding: 1rem;">
     <p>📦 <strong>Sistema de Inventario Bodega ALM</strong> | Desarrollado por el Grupo 5</p>
-    <p><small>Versión 2.0 - Sin Dependencias Externas</small></p>
+    <p><small>Versión 2.5 - Sin Dependencias Externas</small></p>
 </div>
 """, unsafe_allow_html=True)
