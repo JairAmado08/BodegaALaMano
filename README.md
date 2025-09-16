@@ -72,3 +72,8 @@ Consecuencia: la toma de decisiones sobre compras y ventas se ve limitada, afect
   - Se integró módulo de Reportes (top productos, valor de inventario, etc.).
   - Se añadieron Alertas de Stock Bajo.
   - Refinamiento con CSS (logo, estilo de sidebar, tipografía más clara).
+
+- **v2.5 (Septiembre 15 de 2025)**  
+  - Se añadió un login.
+  - Se añadió el CRUD para los movimientos de inventario.
+  - Se añadió un historial de movimientos.
