@@ -116,33 +116,7 @@ st.markdown("""
     <p>Prototipo CRUD de gestión | Versión 2.0</p>
 </div>
 """, unsafe_allow_html=True)
-
-
-# ----------------------------
-# Logo en el Sidebar (Panel de Control)
-# ----------------------------
-with st.sidebar:
-    st.markdown(
-        """
-        <style>
-        .sidebar-logo {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-        .sidebar-logo img {
-            max-width: 150px;
-            height: auto;
-        }
-        </style>
-        <div class="sidebar-logo">
-            <img src="https://raw.githubusercontent.com/JairAmado08/BodegaALaMano/main/images/ALMlogo.png">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    st.markdown("## 🛠️ Panel de Control")
+    
 # ----------------------------
 # Datos iniciales (en memoria)
 # ----------------------------
@@ -191,36 +165,63 @@ def obtener_estadisticas():
     return total_productos, total_cantidad, valor_total, productos_bajo_stock
 
 # ----------------------------
-# Sidebar con métricas
+# Sidebar (Panel de Control)
 # ----------------------------
 with st.sidebar:
-    st.markdown("### 📊 Panel de Control")
-    
-    # Estadísticas
+    # Logo
+    st.markdown(
+        """
+        <style>
+        .sidebar-logo {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .sidebar-logo img {
+            max-width: 150px;
+            height: auto;
+        }
+        </style>
+        <div class="sidebar-logo">
+            <img src="https://raw.githubusercontent.com/JairAmado08/BodegaALaMano/main/images/ALMlogo.png">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Encabezado principal
+    st.markdown("## 🛠️ Panel de Control")
+
+    # ----------------------------
+    # Métricas
+    # ----------------------------
     total_productos, total_cantidad, valor_total, productos_bajo_stock = obtener_estadisticas()
-    
+
+    st.markdown("### 📊 Estadísticas")
     col1, col2 = st.columns(2)
     with col1:
         st.metric("📦 Productos", total_productos)
         st.metric("💰 Valor Total", f"S/{valor_total:,.2f}")
-    
     with col2:
         st.metric("📈 Stock Total", total_cantidad)
         st.metric("⚠️ Bajo Stock", productos_bajo_stock, delta_color="inverse")
-    
+
     st.markdown("---")
-    
-    # Menú de navegación
+
+    # ----------------------------
+    # Navegación
+    # ----------------------------
     st.markdown("### 🧭 Navegación")
     menu_options = {
         "📋 Dashboard": "dashboard",
         "🔎 Buscar Producto": "buscar",
-        "➕ Registrar Producto": "Registrar",
+        "➕ Registrar Producto": "registrar",
         "✏️ Actualizar Producto": "actualizar", 
         "🗑️ Eliminar Producto": "eliminar",
         "📊 Reportes": "reportes"
     }
-    
+
     opcion = st.radio("", list(menu_options.keys()), key="menu_radio")
     opcion_key = menu_options[opcion]
 
