@@ -428,13 +428,13 @@ with st.sidebar:
     # ----------------------------
     st.markdown("### 🧭 Navegación")
     menu_options = {
-        "📋 Dashboard": "dashboard",
+        "📋 Dashboard de Inventario": "dashboard",
         "🔎 Buscar Producto": "buscar",
         "➕ Registrar Producto": "registrar",
         "✏️ Actualizar Producto": "actualizar", 
         "🗑️ Eliminar Producto": "eliminar",
         "📊 Reportes": "reportes",
-        "📦 Movimientos": "movimientos_dashboard",
+        "📦 Dashboard de Movimientos": "movimientos_dashboard",
         "🔍 Buscar Movimiento": "buscar_movimiento",
         "➕ Registrar Movimiento": "registrar_movimiento",
         "✏️ Actualizar Movimiento": "actualizar_movimiento",
