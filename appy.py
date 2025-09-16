@@ -351,7 +351,7 @@ if opcion_key == "dashboard":
         st.info("📭 No hay productos en el inventario. ¡Comienza agregando algunos!")
 
 # Registrar Producto
-elif opcion_key == "Registrar":
+elif opcion_key == "registrar":
     st.markdown("## ➕ Registrar Nuevo Producto")
     
     with st.container():
