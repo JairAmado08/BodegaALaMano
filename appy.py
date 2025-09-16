@@ -355,7 +355,12 @@ with st.sidebar:
         "➕ Registrar Producto": "registrar",
         "✏️ Actualizar Producto": "actualizar", 
         "🗑️ Eliminar Producto": "eliminar",
-        "📊 Reportes": "reportes"
+        "📊 Reportes": "reportes",
+        "📦 Movimientos": "movimientos_dashboard",
+        "🔍 Buscar Movimiento": "buscar_movimiento",
+        "➕ Registrar Movimiento": "registrar_movimiento",
+        "✏️ Actualizar Movimiento": "actualizar_movimiento",
+        "🗑️ Eliminar Movimiento": "eliminar_movimiento"
     }
 
     opcion = st.radio("", list(menu_options.keys()), key="menu_radio")
@@ -808,6 +813,8 @@ elif opcion_key == "reportes":
         
     else:
         st.info("📭 No hay datos suficientes para generar reportes.")
+
+
 
 # ----------------------------
 # Footer
