@@ -1,11 +1,14 @@
+import streamlit as st
+import pandas as pd
+from datetime import datetime
 
 # ----------------------------
 # Funciones Login
 # ----------------------------
 
-def login_user(username, password):
+def login_user(username, password, empleados_autorizados):
     """Función para autenticar usuario"""
-    if username in EMPLEADOS_AUTORIZADOS and EMPLEADOS_AUTORIZADOS[username] == password:
+    if username in empleados_autorizados and empleados_autorizados[username] == password:
         st.session_state.logged_in = True
         st.session_state.username = username
         return True
@@ -28,10 +31,12 @@ def get_display_name(username):
         "luis.torres": "Luis Torres"
     }
     return name_map.get(username, username.replace(".", " ").title())
+
 # ----------------------------
 # Funciones CRUD para Inventario
 # ----------------------------
-def Registrar_producto(id_, nombre, categoria, cantidad, precio):
+
+def registrar_producto(id_, nombre, categoria, cantidad, precio):
     fecha_actual = datetime.now().strftime("%Y-%m-%d")
     nuevo = pd.DataFrame([[id_, nombre, categoria, cantidad, precio, fecha_actual]], 
                          columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"])
@@ -46,6 +51,7 @@ def actualizar_producto(id_, nombre, categoria, cantidad, precio):
         st.session_state.inventario.loc[idx[0], ["Nombre", "Categoría", "Cantidad", "Precio"]] = [nombre, categoria, cantidad, precio]
 
 def obtener_estadisticas():
+    inventario = st.session_state.inventario
     if inventario.empty:
         return 0, 0, 0, 0
     
@@ -62,13 +68,11 @@ def obtener_estadisticas():
 
 def registrar_movimiento(id_mov, tipo, producto_id, cantidad, observaciones=""):
     fecha_actual = datetime.now().strftime("%Y-%m-%d")
+    inventario = st.session_state.inventario
     
     # Obtener nombre del producto
     producto_info = inventario[inventario["ID"] == producto_id]
-    if not producto_info.empty:
-        producto_nombre = producto_info.iloc[0]["Nombre"]
-    else:
-        producto_nombre = "Producto no encontrado"
+    producto_nombre = producto_info.iloc[0]["Nombre"] if not producto_info.empty else "Producto no encontrado"
     
     nuevo_movimiento = pd.DataFrame([[id_mov, tipo, producto_id, producto_nombre, cantidad, fecha_actual, st.session_state.username, observaciones]], 
                                    columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Usuario", "Observaciones"])
@@ -84,9 +88,9 @@ def registrar_movimiento(id_mov, tipo, producto_id, cantidad, observaciones=""):
 
 def actualizar_stock_producto(producto_id, cantidad_cambio):
     """Actualiza el stock del producto según el movimiento"""
-    idx = inventario[inventario["ID"] == producto_id].index
+    idx = st.session_state.inventario[st.session_state.inventario["ID"] == producto_id].index
     if not idx.empty:
-        nueva_cantidad = max(0, inventario.loc[idx[0], "Cantidad"] + cantidad_cambio)
+        nueva_cantidad = max(0, st.session_state.inventario.loc[idx[0], "Cantidad"] + cantidad_cambio)
         st.session_state.inventario.loc[idx[0], "Cantidad"] = nueva_cantidad
 
 def eliminar_movimiento(id_movimiento):
@@ -97,14 +101,17 @@ def actualizar_movimiento(id_mov, tipo, producto_id, cantidad, fecha, observacio
     """Actualiza los datos de un movimiento"""
     idx = st.session_state.movimientos[st.session_state.movimientos["ID_Movimiento"] == id_mov].index
     if not idx.empty:
-        # Obtener nombre del producto
+        inventario = st.session_state.inventario
         producto_info = inventario[inventario["ID"] == producto_id]
         producto_nombre = producto_info.iloc[0]["Nombre"] if not producto_info.empty else "Producto no encontrado"
         
-        st.session_state.movimientos.loc[idx[0], ["Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Observaciones"]] = [tipo, producto_id, producto_nombre, cantidad, fecha, observaciones]
+        st.session_state.movimientos.loc[idx[0], ["Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Observaciones"]] = [
+            tipo, producto_id, producto_nombre, cantidad, fecha, observaciones
+        ]
 
 def obtener_estadisticas_movimientos():
     """Obtiene estadísticas de movimientos"""
+    movimientos = st.session_state.movimientos
     if movimientos.empty:
         return 0, 0, 0, 0
     
