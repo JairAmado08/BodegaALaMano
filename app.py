@@ -1099,6 +1099,10 @@ elif opcion_key == "registrar_movimiento":
                 productos_disponibles = inventario["ID"].tolist() if not inventario.empty else []
                 if productos_disponibles:
                     producto_seleccionado = st.selectbox("📦 Producto", productos_disponibles)
+                    
+                    # 🚀 Mostrar stock actual en tiempo real
+                    stock_actual = inventario[inventario["ID"] == producto_seleccionado]["Cantidad"].iloc[0]
+                    st.metric("📦 Stock Actual", int(stock_actual))
                 else:
                     st.error("❌ No hay productos disponibles. Primero registra algunos productos.")
                     st.stop()
@@ -1111,25 +1115,17 @@ elif opcion_key == "registrar_movimiento":
                     cantidad = st.number_input("📊 Cantidad", min_value=1, step=1, value=1)
                 
                 observaciones = st.text_area("📝 Observaciones", placeholder="Comentarios adicionales...")
-            
+
             submit = st.form_submit_button("✅ Registrar Movimiento", use_container_width=True)
     
     with col2:
         st.markdown("### 💡 Tipos de Movimiento")
         st.info("""
-        **📥 Entrada:** Compras, recepciones
-        
-        **📤 Salida:** Ventas, entregas
-        
-        **⚖️ Ajuste:** Correcciones de inventario
-        
+        **📥 Entrada:** Compras, recepciones  
+        **📤 Salida:** Ventas, entregas  
+        **⚖️ Ajuste:** Correcciones de inventario  
         **🔄 Devolución:** Returns de clientes
         """)
-        
-        # Mostrar stock actual del producto seleccionado
-        if 'producto_seleccionado' in locals():
-            stock_actual = inventario[inventario["ID"] == producto_seleccionado]["Cantidad"].iloc[0]
-            st.metric("📦 Stock Actual", int(stock_actual))
     
     if submit:
         if id_movimiento and productos_disponibles:
@@ -1142,6 +1138,7 @@ elif opcion_key == "registrar_movimiento":
                     st.balloons()
         else:
             st.error("❌ Debes completar al menos ID y seleccionar un producto.")
+
 
 
 # Actualizar Movimiento
