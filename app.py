@@ -312,18 +312,29 @@ def obtener_estadisticas():
 
 def registrar_movimiento(id_mov, tipo, producto_id, cantidad, observaciones=""):
     fecha_actual = datetime.now().strftime("%Y-%m-%d")
-    
+
     # Obtener nombre del producto
     producto_info = inventario[inventario["ID"] == producto_id]
     if not producto_info.empty:
         producto_nombre = producto_info.iloc[0]["Nombre"]
+        stock_actual = int(producto_info.iloc[0]["Cantidad"])
     else:
         producto_nombre = "Producto no encontrado"
-    
-    nuevo_movimiento = pd.DataFrame([[id_mov, tipo, producto_id, producto_nombre, cantidad, fecha_actual, st.session_state.username, observaciones]], 
-                                   columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Usuario", "Observaciones"])
+        stock_actual = 0
+
+    # 🚨 Validar stock insuficiente antes de registrar
+    if tipo == "Salida" and cantidad > stock_actual:
+        st.error(f"❌ No hay suficiente stock. Stock actual: {stock_actual}, intentaste sacar: {cantidad}.")
+        return False  # detener aquí, no registrar
+
+    # Crear movimiento
+    nuevo_movimiento = pd.DataFrame(
+        [[id_mov, tipo, producto_id, producto_nombre, cantidad, fecha_actual, st.session_state.username, observaciones]],
+        columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Usuario", "Observaciones"]
+    )
+
     st.session_state.movimientos = pd.concat([st.session_state.movimientos, nuevo_movimiento], ignore_index=True)
-    
+
     # Actualizar inventario según el tipo de movimiento
     if tipo in ["Entrada", "Devolución"]:
         actualizar_stock_producto(producto_id, cantidad)
@@ -332,6 +343,7 @@ def registrar_movimiento(id_mov, tipo, producto_id, cantidad, observaciones=""):
     elif tipo == "Salida":
         actualizar_stock_producto(producto_id, -cantidad)
 
+    return True  # éxito
 
     # Actualizar inventario
     if tipo in ["Entrada", "Devolución"]:
@@ -1124,15 +1136,13 @@ elif opcion_key == "registrar_movimiento":
             if id_movimiento in movimientos["ID_Movimiento"].values:
                 st.error("⚠️ Ya existe un movimiento con este ID.")
             else:
-                registrar_movimiento(
-                    id_movimiento, 
-                    tipo_movimiento, 
-                    producto_seleccionado, 
-                    cantidad, 
-                    observaciones
-                )
+                exito = registrar_movimiento(id_movimiento, tipo_movimiento, producto_seleccionado, cantidad, observaciones)
+                if exito:
+                    st.success("✅ Movimiento registrado correctamente.")
+                    st.balloons()
         else:
             st.error("❌ Debes completar al menos ID y seleccionar un producto.")
+
 
 # Actualizar Movimiento
 elif opcion_key == "actualizar_movimiento":
