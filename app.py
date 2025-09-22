@@ -310,29 +310,28 @@ def obtener_estadisticas():
 # Funciones CRUD para Movimientos
 # ----------------------------
 
-def registrar_movimiento(id_movimiento, tipo, producto_id, cantidad, observaciones):
-    global inventario, movimientos
-
-    # Validaciones de stock
-    if tipo == "Salida" and cantidad > inventario.loc[inventario["ID"] == producto_id, "Cantidad"].iloc[0]:
-        st.error("❌ No hay suficiente stock para realizar esta salida.")
-        return
+def registrar_movimiento(id_mov, tipo, producto_id, cantidad, observaciones=""):
+    fecha_actual = datetime.now().strftime("%Y-%m-%d")
     
-    if tipo == "Ajuste" and cantidad < 0 and abs(cantidad) > inventario.loc[inventario["ID"] == producto_id, "Cantidad"].iloc[0]:
-        st.error("❌ No puedes ajustar más de lo que hay en stock.")
-        return
+    # Obtener nombre del producto
+    producto_info = inventario[inventario["ID"] == producto_id]
+    if not producto_info.empty:
+        producto_nombre = producto_info.iloc[0]["Nombre"]
+    else:
+        producto_nombre = "Producto no encontrado"
+    
+    nuevo_movimiento = pd.DataFrame([[id_mov, tipo, producto_id, producto_nombre, cantidad, fecha_actual, st.session_state.username, observaciones]], 
+                                   columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Usuario", "Observaciones"])
+    st.session_state.movimientos = pd.concat([st.session_state.movimientos, nuevo_movimiento], ignore_index=True)
+    
+    # Actualizar inventario según el tipo de movimiento
+    if tipo in ["Entrada", "Devolución"]:
+        actualizar_stock_producto(producto_id, cantidad)
+    elif tipo in ["Salida", "Ajuste"] and cantidad < 0:
+        actualizar_stock_producto(producto_id, cantidad)
+    elif tipo == "Salida":
+        actualizar_stock_producto(producto_id, -cantidad)
 
-    # Registrar movimiento
-    nuevo_mov = {
-        "ID_Movimiento": id_movimiento,
-        "Tipo": tipo,
-        "Producto": producto_id,
-        "Cantidad": cantidad,
-        "Observaciones": observaciones,
-        "Fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    }
-
-    movimientos = pd.concat([movimientos, pd.DataFrame([nuevo_mov])], ignore_index=True)
 
     # Actualizar inventario
     if tipo in ["Entrada", "Devolución"]:
