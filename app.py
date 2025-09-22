@@ -310,23 +310,42 @@ def obtener_estadisticas():
 # Funciones CRUD para Movimientos
 # ----------------------------
 
-def registrar_movimiento(id_mov, tipo, producto_id, cantidad, observaciones=""):
-    fecha_actual = datetime.now().strftime("%Y-%m-%d")
+def registrar_movimiento(id_movimiento, tipo, producto_id, cantidad, observaciones):
+    global inventario, movimientos
 
-    # Obtener nombre y stock del producto
-    producto_info = st.session_state.inventario[st.session_state.inventario["ID"] == producto_id]
-    if not producto_info.empty:
-        producto_nombre = producto_info.iloc[0]["Nombre"]
-        stock_actual = producto_info.iloc[0]["Cantidad"]
-    else:
-        st.error("❌ Producto no encontrado en el inventario.")
+    # Validaciones de stock
+    if tipo == "Salida" and cantidad > inventario.loc[inventario["ID"] == producto_id, "Cantidad"].iloc[0]:
+        st.error("❌ No hay suficiente stock para realizar esta salida.")
+        return
+    
+    if tipo == "Ajuste" and cantidad < 0 and abs(cantidad) > inventario.loc[inventario["ID"] == producto_id, "Cantidad"].iloc[0]:
+        st.error("❌ No puedes ajustar más de lo que hay en stock.")
         return
 
-    # Validar stock en caso de salida
-    if tipo == "Salida" and cantidad > stock_actual:
-        st.error(f"❌ No hay suficiente stock para realizar la salida. "
-                 f"Stock disponible: {stock_actual}, solicitado: {cantidad}.")
-        return
+    # Registrar movimiento
+    nuevo_mov = {
+        "ID_Movimiento": id_movimiento,
+        "Tipo": tipo,
+        "Producto": producto_id,
+        "Cantidad": cantidad,
+        "Observaciones": observaciones,
+        "Fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+
+    movimientos = pd.concat([movimientos, pd.DataFrame([nuevo_mov])], ignore_index=True)
+
+    # Actualizar inventario
+    if tipo in ["Entrada", "Devolución"]:
+        inventario.loc[inventario["ID"] == producto_id, "Cantidad"] += cantidad
+    elif tipo == "Salida":
+        inventario.loc[inventario["ID"] == producto_id, "Cantidad"] -= cantidad
+    elif tipo == "Ajuste":
+        inventario.loc[inventario["ID"] == producto_id, "Cantidad"] += cantidad
+
+    # 🎉 Feedback de éxito
+    st.success(f"✅ Movimiento '{tipo}' registrado correctamente.")
+    st.balloons()
+
 
     # Crear movimiento
     nuevo_movimiento = pd.DataFrame(
@@ -1102,15 +1121,19 @@ elif opcion_key == "registrar_movimiento":
             st.metric("📦 Stock Actual", int(stock_actual))
     
     if submit:
-        if id_movimiento and productos_disponibles:
-            if id_movimiento in movimientos["ID_Movimiento"].values:
-                st.error("⚠️ Ya existe un movimiento con este ID.")
-            else:
-                registrar_movimiento(id_movimiento, tipo_movimiento, producto_seleccionado, cantidad, observaciones)
-                st.success("✅ Movimiento registrado correctamente.")
-                st.balloons()
+    if id_movimiento and productos_disponibles:
+        if id_movimiento in movimientos["ID_Movimiento"].values:
+            st.error("⚠️ Ya existe un movimiento con este ID.")
         else:
-            st.error("❌ Debes completar al menos ID y seleccionar un producto.")
+            registrar_movimiento(
+                id_movimiento, 
+                tipo_movimiento, 
+                producto_seleccionado, 
+                cantidad, 
+                observaciones
+            )
+    else:
+        st.error("❌ Debes completar al menos ID y seleccionar un producto.")
 
 # Actualizar Movimiento
 elif opcion_key == "actualizar_movimiento":
