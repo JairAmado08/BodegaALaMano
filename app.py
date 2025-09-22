@@ -1121,19 +1121,19 @@ elif opcion_key == "registrar_movimiento":
             st.metric("📦 Stock Actual", int(stock_actual))
     
     if submit:
-    if id_movimiento and productos_disponibles:
-        if id_movimiento in movimientos["ID_Movimiento"].values:
-            st.error("⚠️ Ya existe un movimiento con este ID.")
+        if id_movimiento and productos_disponibles:
+            if id_movimiento in movimientos["ID_Movimiento"].values:
+                st.error("⚠️ Ya existe un movimiento con este ID.")
+            else:
+                registrar_movimiento(
+                    id_movimiento, 
+                    tipo_movimiento, 
+                    producto_seleccionado, 
+                    cantidad, 
+                    observaciones
+                )
         else:
-            registrar_movimiento(
-                id_movimiento, 
-                tipo_movimiento, 
-                producto_seleccionado, 
-                cantidad, 
-                observaciones
-            )
-    else:
-        st.error("❌ Debes completar al menos ID y seleccionar un producto.")
+            st.error("❌ Debes completar al menos ID y seleccionar un producto.")
 
 # Actualizar Movimiento
 elif opcion_key == "actualizar_movimiento":
