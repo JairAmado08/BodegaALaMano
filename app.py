@@ -312,17 +312,38 @@ def obtener_estadisticas():
 
 def registrar_movimiento(id_mov, tipo, producto_id, cantidad, observaciones=""):
     fecha_actual = datetime.now().strftime("%Y-%m-%d")
-    
-    # Obtener nombre del producto
-    producto_info = inventario[inventario["ID"] == producto_id]
+
+    # Obtener nombre y stock del producto
+    producto_info = st.session_state.inventario[st.session_state.inventario["ID"] == producto_id]
     if not producto_info.empty:
         producto_nombre = producto_info.iloc[0]["Nombre"]
+        stock_actual = producto_info.iloc[0]["Cantidad"]
     else:
-        producto_nombre = "Producto no encontrado"
-    
-    nuevo_movimiento = pd.DataFrame([[id_mov, tipo, producto_id, producto_nombre, cantidad, fecha_actual, st.session_state.username, observaciones]], 
-                                   columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Usuario", "Observaciones"])
+        st.error("❌ Producto no encontrado en el inventario.")
+        return
+
+    # Validar stock en caso de salida
+    if tipo == "Salida" and cantidad > stock_actual:
+        st.error(f"❌ No hay suficiente stock para realizar la salida. "
+                 f"Stock disponible: {stock_actual}, solicitado: {cantidad}.")
+        return
+
+    # Crear movimiento
+    nuevo_movimiento = pd.DataFrame(
+        [[id_mov, tipo, producto_id, producto_nombre, cantidad, fecha_actual, st.session_state.username, observaciones]],
+        columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Usuario", "Observaciones"]
+    )
     st.session_state.movimientos = pd.concat([st.session_state.movimientos, nuevo_movimiento], ignore_index=True)
+
+    # Actualizar inventario según el tipo de movimiento
+    if tipo in ["Entrada", "Devolución"]:
+        actualizar_stock_producto(producto_id, cantidad)
+    elif tipo in ["Salida", "Ajuste"] and cantidad < 0:
+        actualizar_stock_producto(producto_id, cantidad)
+    elif tipo == "Salida":
+        actualizar_stock_producto(producto_id, -cantidad)
+
+    st.success(f"✅ Movimiento '{tipo}' registrado correctamente.")
     
     # Actualizar inventario según el tipo de movimiento
     if tipo in ["Entrada", "Devolución"]:
